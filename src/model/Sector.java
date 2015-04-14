@@ -2,6 +2,9 @@ package model;
 
 import java.util.List;
 
+import model.ships.AncientShip;
+import model.ships.Ship;
+
 public class Sector {
 	private int id;
 	private int value;

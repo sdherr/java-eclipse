@@ -3,6 +3,9 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.ships.AncientShip;
+import model.ships.AncientInterceptor;
+
 public class Map {
 	private List<Sector> unassignedRing1;
 	private List<Sector> unassignedRing2;
@@ -20,7 +23,7 @@ public class Map {
 		worlds.add(new World(WorldType.BROWN, 1, 1));
 		worlds.add(new World(WorldType.ORANGE, 1, 0));
 		ships = new ArrayList<AncientShip>();
-		ships.add(new BasicAncientShip());
+		ships.add(new AncientInterceptor());
 		unassignedRing1.add(new Sector(101, "Gastor", 2, "011111", true, false, worlds, ships));
 
 		worlds = new ArrayList<World>();
@@ -38,8 +41,8 @@ public class Map {
 		worlds.add(new World(WorldType.PINK, 1, 1));
 		worlds.add(new World(WorldType.ORANGE, 1, 1));
 		ships = new ArrayList<AncientShip>();
-		ships.add(new BasicAncientShip());
-		ships.add(new BasicAncientShip());
+		ships.add(new AncientInterceptor());
+		ships.add(new AncientInterceptor());
 		unassignedRing1.add(new Sector(104, "Arcturus", 2, "110110", true, false, worlds, ships));
 
 		worlds = new ArrayList<World>();
@@ -47,7 +50,7 @@ public class Map {
 		worlds.add(new World(WorldType.ORANGE, 1, 0));
 		worlds.add(new World(WorldType.BROWN, 0, 1));
 		ships = new ArrayList<AncientShip>();
-		ships.add(new BasicAncientShip());
+		ships.add(new AncientInterceptor());
 		unassignedRing1.add(new Sector(105, "Zeta Herculis", 3, "110111", true, true, worlds, ships));
 
 		worlds = new ArrayList<World>();
@@ -68,7 +71,7 @@ public class Map {
 		worlds.add(new World(WorldType.WHITE, 1, 0));
 		worlds.add(new World(WorldType.ORANGE, 0, 1));
 		ships = new ArrayList<AncientShip>();
-		ships.add(new BasicAncientShip());
+		ships.add(new AncientInterceptor());
 		unassignedRing1.add(new Sector(108, "Mu Cassiopiae", 2, "110110", true, false, worlds, ships));
 		
 		// init ring 2
@@ -88,8 +91,8 @@ public class Map {
 		worlds.add(new World(WorldType.ORANGE, 1, 0));
 		worlds.add(new World(WorldType.BROWN, 1, 0));
 		ships = new ArrayList<AncientShip>();
-		ships.add(new BasicAncientShip());
-		ships.add(new BasicAncientShip());
+		ships.add(new AncientInterceptor());
+		ships.add(new AncientInterceptor());
 		unassignedRing2.add(new Sector(203, "Chi Draconis", 1, "110101", true, false, worlds, ships));
 
 		worlds = new ArrayList<World>();
@@ -97,7 +100,7 @@ public class Map {
 		worlds.add(new World(WorldType.ORANGE, 0, 1));
 		worlds.add(new World(WorldType.BROWN, 0, 1));
 		ships = new ArrayList<AncientShip>();
-		ships.add(new BasicAncientShip());
+		ships.add(new AncientInterceptor());
 		unassignedRing2.add(new Sector(204, "Vega", 2, "110101", true, true, worlds, ships));
 
 		worlds = new ArrayList<World>();
@@ -136,7 +139,7 @@ public class Map {
 		worlds.add(new World(WorldType.ORANGE, 1, 0));
 		worlds.add(new World(WorldType.BROWN, 0, 1));
 		ships = new ArrayList<AncientShip>();
-		ships.add(new BasicAncientShip());
+		ships.add(new AncientInterceptor());
 		unassignedRing2.add(new Sector(211, "Beta Aquilae", 2, "111100", true, true, worlds, ships));
 		
 		// init ring 3
@@ -145,21 +148,21 @@ public class Map {
 		worlds.add(new World(WorldType.ORANGE, 1, 0));
 		worlds.add(new World(WorldType.BROWN, 0, 1));
 		ships = new ArrayList<AncientShip>();
-		ships.add(new BasicAncientShip());
-		ships.add(new BasicAncientShip());
+		ships.add(new AncientInterceptor());
+		ships.add(new AncientInterceptor());
 		unassignedRing3.add(new Sector(301, "Zeta Draconis", 2, "101100", true, true, worlds, ships));
 		
 		worlds = new ArrayList<World>();
 		worlds.add(new World(WorldType.ORANGE, 0, 1));
 		worlds.add(new World(WorldType.BROWN, 1, 0));
 		ships = new ArrayList<AncientShip>();
-		ships.add(new BasicAncientShip());
+		ships.add(new AncientInterceptor());
 		unassignedRing3.add(new Sector(302, "Gamma Serpentis", 2, "100110", true, true, worlds, ships));
 		
 		worlds = new ArrayList<World>();
 		worlds.add(new World(WorldType.WHITE, 1, 0));
 		ships = new ArrayList<AncientShip>();
-		ships.add(new BasicAncientShip());
+		ships.add(new AncientInterceptor());
 		unassignedRing3.add(new Sector(303, "Eta Cephei", 2, "000101", true, true, worlds, ships));
 		
 		worlds = new ArrayList<World>();
@@ -172,7 +175,7 @@ public class Map {
 		worlds.add(new World(WorldType.PINK, 1, 0));
 		worlds.add(new World(WorldType.BROWN, 1, 0));
 		ships = new ArrayList<AncientShip>();
-		ships.add(new BasicAncientShip());
+		ships.add(new AncientInterceptor());
 		unassignedRing3.add(new Sector(305, "Lambda Serpentis", 1, "110100", true, false, worlds, ships));
 		
 		worlds = new ArrayList<World>();
@@ -259,7 +262,7 @@ public class Map {
 		worlds.add(new World(WorldType.PINK, 1, 0));
 		worlds.add(new World(WorldType.ORANGE, 1, 0));
 		ships = new ArrayList<AncientShip>();
-		ships.add(new BasicAncientShip());
+		ships.add(new AncientInterceptor());
 		unassignedRing3.add(new Sector(320, "Nu Ophiuchi", 1, "001110", true, false, worlds, ships));
 
 		worlds = new ArrayList<World>();
@@ -317,9 +320,9 @@ public class Map {
 		worlds.add(new World(WorldType.BROWN, 1, 1));
 		worlds.add(new World(WorldType.PINK, 0, 1));
 		ships = new ArrayList<AncientShip>();
-		ships.add(new BasicAncientShip());
-		ships.add(new BasicAncientShip());
-		ships.add(new BasicAncientShip());
+		ships.add(new AncientInterceptor());
+		ships.add(new AncientInterceptor());
+		ships.add(new AncientInterceptor());
 		unassignedRing2.add(new Sector(212, "Lambda Fornacis", 2, "111111", true, false, worlds, ships));
 		
 		worlds = new ArrayList<World>();
@@ -327,9 +330,9 @@ public class Map {
 		worlds.add(new World(WorldType.BROWN, 1, 1));
 		worlds.add(new World(WorldType.PINK, 1, 0));
 		ships = new ArrayList<AncientShip>();
-		ships.add(new BasicAncientShip());
-		ships.add(new BasicAncientShip());
-		ships.add(new BasicAncientShip());
+		ships.add(new AncientInterceptor());
+		ships.add(new AncientInterceptor());
+		ships.add(new AncientInterceptor());
 		unassignedRing2.add(new Sector(319, "Upsilon Hydrae", 2, "111111", true, false, worlds, ships));
 	}
 
