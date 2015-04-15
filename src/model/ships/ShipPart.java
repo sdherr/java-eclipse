@@ -39,7 +39,8 @@ public enum ShipPart {
     Flux_Missile,
     Plasma_Missile,
     Antimatter_Missile, // only found on Ancient Cruiser
-    Interceptor_Bay;
+    Interceptor_Bay,
+    None;
 
 	public int getPower() {
 		switch (this) {

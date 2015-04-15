@@ -19,4 +19,9 @@ public class Player {
 	public void setSpecies(PlayerSpecies species) {
 		this.species = species;
 	}
+	
+	public boolean hasResearched(Technology tech) {
+	    // TODO: this
+	    return true;
+	}
 }

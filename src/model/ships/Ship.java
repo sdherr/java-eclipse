@@ -40,7 +40,6 @@ public abstract class Ship {
 	protected abstract Map<Integer, ShipPart> getInitialBlueprint();
 	protected abstract int getInherentInitiative();
 	protected abstract int getInherentPower();
-	protected abstract int getCost();
 	public abstract int reputationDraws();
 	
 	protected int getInherentShields() {
@@ -60,6 +59,10 @@ public abstract class Ship {
 	}
 	
 	public int getVictoryPointValue() {
+	    return 0;
+	}
+	
+	public int getNumModifiableSlots() {
 	    return 0;
 	}
 	
