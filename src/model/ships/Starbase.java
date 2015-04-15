@@ -85,28 +85,4 @@ public class Starbase extends Ship {
     protected boolean shipCanHaveDrive() {
         return false;
     }
-
-    /*
-     * I really wanted to have in Purchasable interface that specified static
-     * canBePurchased(Player) and getCost(Player), but java < 8 doesn't support
-     * static methods in interfaces. Instead Purchasable classes will just
-     * magically have these methods, and something else will "know" that they
-     * are the only purchasable things.
-     */
-    public static boolean canBePurchased(Player player) {
-        if (player.getSpecies() == PlayerSpecies.Exiles) {
-            return false;
-        }
-        return player.hasResearched(Technology.Starbase);
-    }
-
-    public static int getCost(Player player) {
-        if (player.getSpecies() == PlayerSpecies.Mechanema) {
-            return 2;
-        }
-        if (player.getSpecies() == PlayerSpecies.Rho_Indi) {
-            return 4;
-        }
-        return 3;
-    }
 }

@@ -4,5 +4,6 @@ public enum WorldType {
 	ORANGE,
 	PINK,
 	BROWN,
-	WHITE;
+	WHITE,
+	ORBITAL;
 }

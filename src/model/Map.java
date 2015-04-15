@@ -457,9 +457,9 @@ public class Map {
 		    return new Sector(232, "Rigel", 3, "110110", false, true, worlds, ships);
 		}
 		else if (player.getSpecies() == PlayerSpecies.Exiles) {
-			// TODO: add orbital
 			worlds.add(new World(WorldType.ORANGE, 0, 1));
             worlds.add(new World(WorldType.BROWN, 1, 1));
+            worlds.add(new World(WorldType.ORBITAL, 1, 0));
 		    return new Sector(234, "Eta Geminorum", 3, "110110", false, true, worlds, ships);
 		}
 		else if (player.getSpecies() == PlayerSpecies.Rho_Indi) {

@@ -13,6 +13,7 @@ public class Sector {
 	private boolean centerWormhole;
 	private boolean discoveryTile;
 	private boolean star;
+	private boolean monolith = false;
 	private List<World> worlds;
 	private List<AncientShip> ancientShips;
 	private List<Ship> ships;
@@ -35,5 +36,26 @@ public class Sector {
 	
 	public boolean hasCenterWormhole() {
 		return centerWormhole;
+	}
+	
+	public boolean hasMonolith() {
+	    return monolith;
+	}
+	
+	public void addMonolith() {
+	    monolith = true;
+	}
+	
+	public boolean hasOrbital() {
+	    for (World world : worlds) {
+	        if (world.getType() == WorldType.ORBITAL) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+	
+	public void addOrbital() {
+	    worlds.add(new World(WorldType.ORBITAL, 1, 0));
 	}
 }
