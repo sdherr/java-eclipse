@@ -7,7 +7,7 @@ import java.util.Map;
 import model.Player;
 import model.PlayerSpecies;
 
-public class Interceptor extends Ship {
+public class Interceptor extends ShipBlueprint {
     private final static Map<Integer, ShipPart> blueprint;
     static {
         Map<Integer, ShipPart> tmp = new HashMap<Integer, ShipPart>();
@@ -88,5 +88,16 @@ public class Interceptor extends Ship {
     @Override
     public int getNumModifiableSlots() {
         return 4;
+    }
+
+    @Override
+    public int getCost() {
+        if (player.getSpecies() == PlayerSpecies.Mechanema) {
+            return 2;
+        }
+        if (player.getSpecies() == PlayerSpecies.Rho_Indi) {
+            return 4;
+        }
+        return 3;
     }
 }

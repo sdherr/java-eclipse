@@ -7,7 +7,7 @@ import java.util.Map;
 import model.Player;
 import model.PlayerSpecies;
 
-public class Cruiser extends Ship {
+public class Cruiser extends ShipBlueprint {
     private static final Map<Integer, ShipPart> blueprint;
     static {
         Map<Integer, ShipPart> tmp = new HashMap<Integer, ShipPart>();
@@ -91,5 +91,16 @@ public class Cruiser extends Ship {
     @Override
     public int getNumModifiableSlots() {
         return 6;
+    }
+
+    @Override
+    public int getCost() {
+        if (player.getSpecies() == PlayerSpecies.Mechanema) {
+            return 4;
+        }
+        if (player.getSpecies() == PlayerSpecies.Rho_Indi) {
+            return 6;
+        }
+        return 5;
     }
 }

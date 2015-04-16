@@ -7,7 +7,7 @@ import java.util.Map;
 import model.Player;
 import model.PlayerSpecies;
 
-public class Dreadnought extends Ship {
+public class Dreadnought extends ShipBlueprint {
     private static final Map<Integer, ShipPart> blueprint;
     static {
         Map<Integer, ShipPart> tmp = new HashMap<Integer, ShipPart>();
@@ -24,10 +24,7 @@ public class Dreadnought extends Ship {
     
     private Player player;
     
-    public Dreadnought(Player player) throws CannotBuildException {
-        if (player.getSpecies() == PlayerSpecies.Rho_Indi) {
-            throw new CannotBuildException();
-        }
+    public Dreadnought(Player player) {
         this.player = player;
     }
     
@@ -87,5 +84,13 @@ public class Dreadnought extends Ship {
     @Override
     public int getNumModifiableSlots() {
         return 7;
+    }
+
+    @Override
+    public int getCost() {
+        if (player.getSpecies() == PlayerSpecies.Mechanema) {
+            return 7;
+        }
+        return 8;
     }
 }

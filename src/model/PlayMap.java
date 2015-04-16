@@ -1,18 +1,150 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import model.ships.AncientShip;
 import model.ships.AncientInterceptor;
 
-public class Map {
-	private List<Sector> unassignedRing1;
-	private List<Sector> unassignedRing2;
-	private List<Sector> unassignedRing3;
+public class PlayMap {
+	private List<Sector> unassignedRing1 = new ArrayList<Sector>();
+	private List<Sector> unassignedRing2 = new ArrayList<Sector>();
+	private List<Sector> unassignedRing3 = new ArrayList<Sector>();
+	private List<Integer> reputationBag = new ArrayList<Integer>();
+	private List<DiscoveryTile> discoveryBag = new ArrayList<DiscoveryTile>();
+	private List<Technology> technologyBag = new ArrayList<Technology>();
+	private List<Development> developmentBag = new ArrayList<Development>();
 	
-	public Map() {
+	public PlayMap() {
 		initSectors();
+		initReputation();
+		initTechnologies();
+		initDiscoveries();
+		initDevelopments(true);
+        Collections.shuffle(unassignedRing1);
+        Collections.shuffle(unassignedRing2);
+        Collections.shuffle(unassignedRing3);
+        Collections.shuffle(discoveryBag);
+        Collections.shuffle(reputationBag);
+        Collections.shuffle(technologyBag);
+        Collections.shuffle(developmentBag);
+	}
+	
+	private void initDiscoveries() {
+	    for (int i = 0; i < 3; i++) {
+	        discoveryBag.add(DiscoveryTile.Money);
+            discoveryBag.add(DiscoveryTile.Science);
+            discoveryBag.add(DiscoveryTile.Materials);
+            discoveryBag.add(DiscoveryTile.Ancient_Technology);
+            discoveryBag.add(DiscoveryTile.Ancient_Cruiser);
+	    }
+        discoveryBag.add(DiscoveryTile.Axon_Computer);
+        discoveryBag.add(DiscoveryTile.Hypergrid_Source);
+        discoveryBag.add(DiscoveryTile.Shard_Hull);
+        discoveryBag.add(DiscoveryTile.Ion_Turret);
+        discoveryBag.add(DiscoveryTile.Conformal_Drive);
+        discoveryBag.add(DiscoveryTile.Flux_Shield);
+	}
+	
+	private void initAdditionalDiscoveries(boolean useWarpPortal) {
+	    discoveryBag.add(DiscoveryTile.Money_Science_Materials);
+        discoveryBag.add(DiscoveryTile.Money_Science_Materials);
+        discoveryBag.add(DiscoveryTile.Ancient_Orbital);
+        discoveryBag.add(DiscoveryTile.Ancient_Orbital);
+        discoveryBag.add(DiscoveryTile.Morph_Shield);
+        discoveryBag.add(DiscoveryTile.Ion_Disruptor);
+        discoveryBag.add(DiscoveryTile.Muon_Source);
+        discoveryBag.add(DiscoveryTile.Jump_Drive);
+        if (useWarpPortal) {
+            discoveryBag.add(DiscoveryTile.Ancient_Warp_Portal);
+        }
+	}
+	
+	private void initDevelopments(boolean useWarpPortal) {
+	    for (Development dev : Development.values()) {
+	        if (!useWarpPortal && dev == Development.Warp_Portal) {
+	            continue;
+	        }
+	        developmentBag.add(dev);
+	    }
+	}
+	
+	private void initTechnologies() {
+	    for (int i = 0; i < 5; i++){
+	        technologyBag.add(Technology.Neutron_Bombs);
+            technologyBag.add(Technology.Starbase);
+            technologyBag.add(Technology.Plasma_Cannon);
+            technologyBag.add(Technology.Gauss_Shield);
+            technologyBag.add(Technology.Improved_Hull);
+            technologyBag.add(Technology.Fusion_Source);
+            technologyBag.add(Technology.Nanorobots);
+            technologyBag.add(Technology.Fusion_Drive);
+            technologyBag.add(Technology.Advanced_Robotics);
+	    }
+        for (int i = 0; i < 4; i++){
+            technologyBag.add(Technology.Phase_Shield);
+            technologyBag.add(Technology.Advanced_Mining);
+            technologyBag.add(Technology.Positron_Computer);
+            technologyBag.add(Technology.Advanced_Economy);
+            technologyBag.add(Technology.Orbital);
+            technologyBag.add(Technology.Advanced_Labs);
+        }
+        for (int i = 0; i < 3; i++){
+            technologyBag.add(Technology.Tachyon_Source);
+            technologyBag.add(Technology.Plasma_Missile);
+            technologyBag.add(Technology.Gluon_Computer);
+            technologyBag.add(Technology.Tachyon_Drive);
+            technologyBag.add(Technology.Antimatter_Cannon);
+            technologyBag.add(Technology.Quantum_Grid);
+            technologyBag.add(Technology.Monolith);
+            technologyBag.add(Technology.Artifact_Key);
+            technologyBag.add(Technology.Wormhole_Generator);
+        }
+	}
+	
+	private void initAdditionalTechnologies() {
+	    for (Technology tech : Technology.values()) {
+	        if (tech.getType() == TechnologyType.Rare || tech.getDefaultCost() == 2 ||
+	                tech == Technology.Starbase || tech == Technology.Tachyon_Drive || tech == Technology.Artifact_Key) {
+	            continue;
+	        }
+	        technologyBag.add(tech);
+	    }
+	}
+	
+	private void initRareTechnologies() {
+	    for (Technology tech : Technology.values()) {
+	        if (tech.getType() == TechnologyType.Rare) {
+	            technologyBag.add(tech);
+	        }
+	    }
+	}
+	
+	private void initReputation() {
+	    for (int i = 0; i < 4; i++) {
+	        reputationBag.add(4);
+	    }
+        for (int i = 0; i < 7; i++) {
+            reputationBag.add(3);
+        }
+        for (int i = 0; i < 9; i++) {
+            reputationBag.add(2);
+        }
+        for (int i = 0; i < 12; i++) {
+            reputationBag.add(1);
+        }
+	}
+	
+	private void initAdditionalReputation() {
+	    // two of each plus an extra three. let's only write two loops
+	    for (int i = 1; i < 5; i++) {
+	        reputationBag.add(i);
+	    }
+        for (int i = 1; i < 5; i++) {
+            reputationBag.add(i);
+        }
+        reputationBag.add(3);
 	}
 	
 	private void initSectors() {

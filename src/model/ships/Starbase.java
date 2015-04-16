@@ -8,7 +8,7 @@ import model.Player;
 import model.PlayerSpecies;
 import model.Technology;
 
-public class Starbase extends Ship {
+public class Starbase extends ShipBlueprint {
     private static final Map<Integer, ShipPart> blueprint;
     static {
         Map<Integer, ShipPart> tmp = new HashMap<Integer, ShipPart>();
@@ -84,5 +84,16 @@ public class Starbase extends Ship {
     @Override
     protected boolean shipCanHaveDrive() {
         return false;
+    }
+
+    @Override
+    public int getCost() {
+        if (player.getSpecies() == PlayerSpecies.Mechanema) {
+            return 2;
+        }
+        if (player.getSpecies() == PlayerSpecies.Rho_Indi) {
+            return 4;
+        }
+        return 3;
     }
 }

@@ -1,13 +1,19 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import model.ships.Cruiser;
 import model.ships.Dreadnought;
 import model.ships.Interceptor;
+import model.ships.Monolith;
+import model.ships.Orbital;
+import model.ships.Ship;
+import model.ships.ShipBlueprint;
 import model.ships.ShipPart;
 import model.ships.ShipType;
 import model.ships.Starbase;
@@ -19,7 +25,7 @@ public class Player {
 	private int science;
 	private int materials;
 	private int tradeRate; // "x to 1"
-	private int colonyShips;
+	private int colonyShips = 3;
 	private int usedColonyShips = 0;
 	private int influenceDisks = 13;
 	private int exp = 1; // one sector on exp
@@ -28,15 +34,16 @@ public class Player {
 	private int upg = 2; // two ship parts on upg
 	private int bui = 2; // two ships on bui
 	private int mov = 2; // two activations on mov
-	private List<Interceptor> interceptors = new ArrayList<Interceptor>();
-    private List<Cruiser> cruisers = new ArrayList<Cruiser>();
-    private List<Dreadnought> dreadnoughts = new ArrayList<Dreadnought>();
-    private List<Starbase> starbases = new ArrayList<Starbase>();
+	private int availableAmbassadors = 4;
+	private int discoveryVP = 0;
+    private List<Ship> ships = new ArrayList<Ship>();
     private List<Sector> sectors = new ArrayList<Sector>();
     private Set<ShipPart> upgradableParts = new HashSet<ShipPart>();
-	private TechnologyTrack militaryTrack= new TechnologyTrack(TechnologyType.Military);
-    private TechnologyTrack gridTrack= new TechnologyTrack(TechnologyType.Grid);
-    private TechnologyTrack nanoTrack= new TechnologyTrack(TechnologyType.Nano);
+    private Map<ShipType, ShipBlueprint> shipBlueprints = new HashMap<ShipType, ShipBlueprint>();
+    private Map<TechnologyType, TechnologyTrack> technologyTracks = new HashMap<TechnologyType, TechnologyTrack>();
+    private List<Development> developments = new ArrayList<Development>();
+    private List<RepAmbSlot> repAmbTrack = new ArrayList<RepAmbSlot>();
+    private List<ShipPart> oneTimePlacementParts = new ArrayList<ShipPart>();
 	
 	public Player(PlayerSpecies species, PlayerColor color) {
 	    this.species = species;
@@ -46,45 +53,59 @@ public class Player {
         upgradableParts.add(ShipPart.Nuclear_Drive);
         upgradableParts.add(ShipPart.Nuclear_Source);
         upgradableParts.add(ShipPart.Electron_Computer);
+        shipBlueprints.put(ShipType.Interceptor, new Interceptor(this));
+        shipBlueprints.put(ShipType.Cruiser, new Cruiser(this));
+        shipBlueprints.put(ShipType.Dreadnought, new Dreadnought(this));
+        shipBlueprints.put(ShipType.Starbase, new Starbase(this));
+        shipBlueprints.put(ShipType.Orbital, new Orbital(this));
+        shipBlueprints.put(ShipType.Monolith, new Monolith(this));
+        TechnologyTrack militaryTrack= new TechnologyTrack(TechnologyType.Military);
+        TechnologyTrack gridTrack= new TechnologyTrack(TechnologyType.Grid);
+        TechnologyTrack nanoTrack= new TechnologyTrack(TechnologyType.Nano);
+        repAmbTrack.add(new RepAmbSlot(RepAmbType.Both));
+        repAmbTrack.add(new RepAmbSlot(RepAmbType.Both));
+        repAmbTrack.add(new RepAmbSlot(RepAmbType.Both));
+        repAmbTrack.add(new RepAmbSlot(RepAmbType.Both));
+        Sector startingSector = null; // TODO fix?
+        
 	    switch (species) {
 	    case Terran:
 	        money = 2;
 	        science = 3;
 	        materials = 3;
 	        tradeRate = 2;
-	        colonyShips = 3;
 	        mov = 3;
 	        militaryTrack.add(Technology.Starbase);
-	        interceptors.add(new Interceptor(this));
+	        ships.add(new Ship(this, startingSector, ShipType.Interceptor));
+	        repAmbTrack.add(0, new RepAmbSlot(RepAmbType.Ambassador_Only));
 	        break;
 	    case Descendants:
 	        money = 2;
 	        science = 4;
 	        materials = 3;
             tradeRate = 3;
-            colonyShips = 3;
-            interceptors.add(new Interceptor(this));
+            ships.add(new Ship(this, startingSector, ShipType.Interceptor));
             break;
 	    case Orion:
             money = 3;
             science = 3;
             materials = 5;
             tradeRate = 4;
-            colonyShips = 3;
             militaryTrack.add(Technology.Neutron_Bombs);
             gridTrack.add(Technology.Gauss_Shield);
             upgradableParts.add(ShipPart.Gauss_Shield);
-            cruisers.add(new Cruiser(this));
+            ships.add(new Ship(this, startingSector, ShipType.Cruiser));
+            repAmbTrack.add(new RepAmbSlot(RepAmbType.Reputation_Only));
             break;
 	    case Hydran:
             money = 2;
             science = 5;
             materials = 2;
             tradeRate = 3;
-            colonyShips = 3;
             res = 2;
             nanoTrack.add(Technology.Advanced_Labs);
-            interceptors.add(new Interceptor(this));
+            ships.add(new Ship(this, startingSector, ShipType.Interceptor));
+            repAmbTrack.set(0, new RepAmbSlot(RepAmbType.Ambassador_Only));
             break;
 	    case Planta:
             money = 4;
@@ -94,26 +115,25 @@ public class Player {
             colonyShips = 4;
             exp = 2;
             militaryTrack.add(Technology.Starbase);
-            interceptors.add(new Interceptor(this));
+            ships.add(new Ship(this, startingSector, ShipType.Interceptor));
+            repAmbTrack.set(0, new RepAmbSlot(RepAmbType.Ambassador_Only));
             break;
 	    case Mechanema:
             money = 3;
             science = 3;
             materials = 3;
             tradeRate = 3;
-            colonyShips = 3;
             upg = 3;
             bui = 3;
             gridTrack.add(Technology.Positron_Computer);
             upgradableParts.add(ShipPart.Positron_Computer);
-            interceptors.add(new Interceptor(this));
+            ships.add(new Ship(this, startingSector, ShipType.Interceptor));
             break;
 	    case Eridani:
             money = 26;
             science = 2;
             materials = 4;
             tradeRate = 3;
-            colonyShips = 3;
             influenceDisks = 11;
             militaryTrack.add(Technology.Plasma_Cannon);
             gridTrack.add(Technology.Gauss_Shield);
@@ -121,16 +141,15 @@ public class Player {
             upgradableParts.add(ShipPart.Plasma_Cannon);
             upgradableParts.add(ShipPart.Gauss_Shield);
             upgradableParts.add(ShipPart.Fusion_Drive);
-            interceptors.add(new Interceptor(this));
+            ships.add(new Ship(this, startingSector, ShipType.Interceptor));
             break;
 	    case Enlightened:
             money = 2;
             science = 4;
             materials = 3;
             tradeRate = 3;
-            colonyShips = 3;
             gridTrack.add(Technology.Distortion_Shield);
-            interceptors.add(new Interceptor(this));
+            ships.add(new Ship(this, startingSector, ShipType.Interceptor));
             break;
 	    case Rho_Indi:
             money = 2;
@@ -139,34 +158,40 @@ public class Player {
             tradeRate = 3;
             colonyShips = 2;
             mov = 4;
+            availableAmbassadors = 2;
             militaryTrack.add(Technology.Starbase);
             gridTrack.add(Technology.Gauss_Shield);
             upgradableParts.add(ShipPart.Gauss_Shield);
-            interceptors.add(new Interceptor(this));
-            interceptors.add(new Interceptor(this));
+            ships.add(new Ship(this, startingSector, ShipType.Interceptor));
+            ships.add(new Ship(this, startingSector, ShipType.Interceptor));
+            repAmbTrack.set(2, new RepAmbSlot(RepAmbType.Reputation_Only));
+            repAmbTrack.set(3, new RepAmbSlot(RepAmbType.Reputation_Only));
+            repAmbTrack.add(new RepAmbSlot(RepAmbType.Reputation_Only));
             break;
 	    case Exiles:
             money = 3;
             science = 2;
             materials = 4;
             tradeRate = 3;
-            colonyShips = 3;
             militaryTrack.add(Technology.Cloaking_Device);
             nanoTrack.add(Technology.Orbital);
-            interceptors.add(new Interceptor(this));
+            ships.add(new Ship(this, startingSector, ShipType.Interceptor));
             break;
 	    case Magellan:
             money = 2;
             science = 2;
             materials = 3;
             tradeRate = 3;
-            colonyShips = 3;
             inf = 1;
             gridTrack.add(Technology.Fusion_Source);
             upgradableParts.add(ShipPart.Fusion_Source);
-            interceptors.add(new Interceptor(this));
+            ships.add(new Ship(this, startingSector, ShipType.Interceptor));
             break;
 	    }
+	    
+	    technologyTracks.put(TechnologyType.Military, militaryTrack);
+	    technologyTracks.put(TechnologyType.Grid, gridTrack);
+	    technologyTracks.put(TechnologyType.Nano, nanoTrack);
 	}
 
 	public PlayerColor getColor() {
@@ -178,23 +203,26 @@ public class Player {
 	}
 	
 	public boolean hasResearched(Technology tech) {
-	    return militaryTrack.contains(tech) || gridTrack.contains(tech) || nanoTrack.contains(tech);
+	    return technologyTracks.get(TechnologyType.Military).contains(tech)
+	            || technologyTracks.get(TechnologyType.Grid).contains(tech)
+	            || technologyTracks.get(TechnologyType.Nano).contains(tech);
 	}
 	
 	private boolean canResearch(Technology tech) {
-	    return militaryTrack.canAdd(tech) || gridTrack.canAdd(tech) || nanoTrack.canAdd(tech);
+	    return technologyTracks.get(TechnologyType.Military).canAdd(tech)
+	            || technologyTracks.get(TechnologyType.Grid).canAdd(tech)
+	            || technologyTracks.get(TechnologyType.Nano).canAdd(tech);
 	}
 	
 	private int minResearchCost(Technology tech) {
 	    int minCost = 100; // large enough to be ridiculous
-	    if (militaryTrack.canAdd(tech)) {
-	        minCost = militaryTrack.cost(tech);
-	    }
-	    if (gridTrack.canAdd(tech) && gridTrack.cost(tech) < minCost) {
-	        minCost = gridTrack.cost(tech);
-	    }
-	    if (nanoTrack.canAdd(tech) && nanoTrack.cost(tech) < minCost) {
-	        minCost = nanoTrack.cost(tech);
+	    for (TechnologyType type : TechnologyType.values()) {
+	        if (type == TechnologyType.Rare) {
+	            continue;
+	        }
+	        if (technologyTracks.get(type).canAdd(tech) && technologyTracks.get(type).cost(tech) < minCost) {
+	            minCost = technologyTracks.get(type).cost(tech);
+	        }
 	    }
 	    return minCost;
 	}
@@ -237,20 +265,13 @@ public class Player {
 	    return !hasResearched(tech) && canResearch(tech) && minResearchCost(tech) <= maxPossibleScience();
 	}
 	
-	// TODO proper error handling
 	public void research(Technology tech, TechnologyType type) {
-	    if (type == TechnologyType.Military) {
-	        science -= militaryTrack.cost(tech);
-	        militaryTrack.add(tech);
+	    if (!technologyTracks.get(type).canAdd(tech) || !canEasilyResearch(tech)) {
+	        return; // TODO maybe throw an error instead of doing nothing?
 	    }
-	    else if (type == TechnologyType.Grid) {
-            science -= gridTrack.cost(tech);
-	        gridTrack.add(tech);
-	    }
-	    else {
-	        nanoTrack.add(tech);
-            science -= nanoTrack.cost(tech);
-	    }
+	    
+	    science -= technologyTracks.get(type).cost(tech);
+	    technologyTracks.get(type).add(tech);
 	    
 	    switch (tech) {
 	    case Plasma_Cannon:
@@ -359,73 +380,56 @@ public class Player {
 	    return extra + shortfall >= 0;
 	}
 	
+	public void research(Development dev) {
+	    if (!canEasilyResearch(dev)) {
+	        return; // TODO: maybe throw an error instead?
+	    }
+	    
+	    money -= dev.getEconomyCost();
+	    science -= dev.getScienceCost();
+	    materials -= dev.getMaterialsCost();
+	    developments.add(dev);
+	    
+	    switch (dev) {
+	    case Mining_Colony:
+	        materials += 12;
+	        break;
+	    case Research_Station:
+	        science += 12;
+	        break;
+	    case Trade_Fleet:
+	        money += 12;
+	        break;
+	    case Diplomatic_Fleet:
+	        repAmbTrack.add(new RepAmbSlot(RepAmbType.Both));
+	        break;
+	    default:
+	        ; // TODO place shellworld and warp portal if it's those
+	    }
+	}
+	
     private int getShipCost(ShipType shipType) {
-        if (shipType == ShipType.Interceptor) {
-            if (species == PlayerSpecies.Mechanema) {
-                return 2;
-            }
-            if (species == PlayerSpecies.Rho_Indi) {
-                return 4;
-            }
-            return 3;
-        }
-        else if (shipType == ShipType.Cruiser) {
-            if (species == PlayerSpecies.Mechanema) {
-                return 4;
-            }
-            if (species == PlayerSpecies.Rho_Indi) {
-                return 6;
-            }
-            return 5;
-        }
-        else if (shipType == ShipType.Dreadnought) {
-            if (species == PlayerSpecies.Mechanema) {
-                return 7;
-            }
-            return 8;
-        }
-        else if (shipType == ShipType.Starbase) {
-            if (species == PlayerSpecies.Mechanema) {
-                return 2;
-            }
-            if (species == PlayerSpecies.Rho_Indi) {
-                return 4;
-            }
-            return 3;
-        }
-        else if (shipType == ShipType.Orbital) {
-            if (species == PlayerSpecies.Mechanema) {
-                return 4;
-            }
-            if (species == PlayerSpecies.Exiles) {
-                return 6;
-            }
-            return 5;
-        }
-        else { // shipType == Monolith
-            if (species == PlayerSpecies.Mechanema) {
-                return 8;
-            }
-            return 10;
-        }
+        return shipBlueprints.get(shipType).getCost();
     }
     
-    private boolean hasEmptyOrbitalSector() {
+    private List<Sector> listEmptyOrbitalSectors() {
+        List<Sector> ret = new ArrayList<Sector>();
         for (Sector sector : sectors) {
             if (!sector.hasOrbital()) {
-                return true;
+                ret.add(sector);
             }
         }
-        return false;
+        return ret;
     }
     
-    private boolean hasEmptyMonolithSector() {
+    private List<Sector> listEmptyMonolithSectors() {
+        List<Sector> ret = new ArrayList<Sector>();
         for (Sector sector : sectors) {
             if (!sector.hasMonolith()) {
-                return true;
+                ret.add(sector);
             }
         }
-        return false;
+        return ret;
     }
     
     /*
@@ -433,18 +437,24 @@ public class Player {
      * Not counting cost.
      */
     private boolean canBuild(ShipType shipType) {
+        int numShipsBuilt = 0;
+        for (Ship ship : ships) {
+            if (ship.getType() == shipType) {
+                numShipsBuilt += 1;
+            }
+        }
         if (shipType == ShipType.Interceptor) {
-            return interceptors.size() < 8;
+            return numShipsBuilt < 8;
         }
         if (shipType == ShipType.Cruiser) {
-            return cruisers.size() < 4;
+            return numShipsBuilt < 4;
         }
         if (shipType == ShipType.Dreadnought) {
             if (species == PlayerSpecies.Rho_Indi) {
                 return false;
             }
             else {
-                return dreadnoughts.size() < 2;
+                return numShipsBuilt < 2;
             }
         }
         else if (shipType == ShipType.Starbase) {
@@ -452,14 +462,14 @@ public class Player {
                 return false;
             }
             else {
-                return hasResearched(Technology.Starbase);
+                return numShipsBuilt < 4 && hasResearched(Technology.Starbase);
             }
         }
         else if (shipType == ShipType.Orbital) {
-            return hasResearched(Technology.Orbital) && hasEmptyOrbitalSector();
+            return hasResearched(Technology.Orbital) && !listEmptyOrbitalSectors().isEmpty();
         }
         else if (shipType == ShipType.Monolith) {
-            return hasResearched(Technology.Monolith) && hasEmptyMonolithSector();
+            return hasResearched(Technology.Monolith) && !listEmptyMonolithSectors().isEmpty();
         }
         return false;
     }
@@ -476,8 +486,145 @@ public class Player {
 	    return colonyShips - usedColonyShips;
 	}
 	
+	public void useDiscoveryTile(DiscoveryTile tile, boolean keepingAsVp, Sector sector) {
+	    if (keepingAsVp) {
+	        discoveryVP += 2;
+	        return;
+	    }
+	    if (species == PlayerSpecies.Magellan) {
+	        discoveryVP += 1;
+	    }
+	    switch (tile) {
+	    case Money:
+	        money += 8;
+	        break;
+	    case Science:
+	        science += 5;
+	        break;
+	    case Materials:
+	        materials += 6;
+	        break;
+	    case Money_Science_Materials:
+	        money += 3;
+	        science += 2;
+	        materials += 2;
+	        break;
+	    case Ancient_Cruiser:
+	        // TODO add ship to sector
+	        break;
+	    case Ancient_Technology:
+	        // TODO this
+	        break;
+	    case Ancient_Orbital:
+	        if (sector.hasOrbital()) {
+	            if (species == PlayerSpecies.Magellan) {
+	                discoveryVP += 1;
+	            }
+	            else {
+	                discoveryVP += 2;
+	            }
+	        }
+	        else {
+	            sector.addOrbitalDiscovery();
+	        }
+	        break;
+	    case Ancient_Warp_Portal:
+	        sector.addWarpPortalDiscovery();
+	        break;
+	    case Ion_Turret:
+	        oneTimePlacementParts.add(ShipPart.Ion_Turret);
+	        // TODO for all these next ones call out to something maybe to enable user to place ship part immediately
+	        break;
+        case Conformal_Drive:
+            oneTimePlacementParts.add(ShipPart.Conformal_Drive);
+            break;
+        case Flux_Shield:
+            oneTimePlacementParts.add(ShipPart.Flux_Shield);
+            break;
+        case Axon_Computer:
+            oneTimePlacementParts.add(ShipPart.Axion_Computer);
+            break;
+        case Hypergrid_Source:
+            oneTimePlacementParts.add(ShipPart.Hypergrid_Source);
+            break;
+        case Shard_Hull:
+            oneTimePlacementParts.add(ShipPart.Shard_Hull);
+            break;
+        case Muon_Source:
+            oneTimePlacementParts.add(ShipPart.Muon_Source);
+            break;
+        case Morph_Shield:
+            oneTimePlacementParts.add(ShipPart.Morph_Shield);
+            break;
+        case Ion_Disruptor:
+            oneTimePlacementParts.add(ShipPart.Ion_Disruptor);
+            break;
+        case Jump_Drive:
+            oneTimePlacementParts.add(ShipPart.Jump_Drive);
+            break;
+	    }
+	}
+	
 	public int getVictoryPoints() {
-	    return militaryTrack.getVP() + gridTrack.getVP() + nanoTrack.getVP();
+	    int vp = 0;
+	    for (TechnologyTrack track : technologyTracks.values()) {
+	        vp += track.getVP();
+	    }
+	    if (developments.contains(Development.Ancient_Monument)) {
+	        vp += 3;
+	    }
+        for (Sector sector : sectors) {
+            vp += sector.getVPValue();
+            if (developments.contains(Development.Artifact_Link)) {
+                vp += sector.numberOfArtifacts();
+            }
+        }
+        for (RepAmbSlot slot : repAmbTrack) {
+            vp += slot.getVPValue();
+        }
+        vp += discoveryVP;
+	    return vp;
+	}
+	
+	private enum RepAmbType {
+	    Ambassador_Only, Reputation_Only, Both;
+	}
+	
+	private class RepAmbSlot {
+	    RepAmbType type;
+	    Player ambassador;
+	    Integer reputationTile;
+	    
+	    public RepAmbSlot(RepAmbType type) {
+	        this.type = type;
+	    }
+	    
+	    public void setRepuationTile(Integer reputationTile) {
+	        this.reputationTile = reputationTile;
+	    }
+	    
+	    public Integer getReputationTile() {
+	        return reputationTile;
+	    }
+	    
+	    public void setAmbassador(Player ambassador) {
+	        reputationTile = null;
+	        this.ambassador = ambassador;
+	    }
+	    
+	    public Player getAmbassador() {
+	        return ambassador;
+	    }
+	    
+	    public int getVPValue() {
+	        if (ambassador != null) {
+	            return 1;
+	        }
+	        if (reputationTile != null) {
+	            return reputationTile;
+	        }
+	        return 0;
+	    }
 	}
 
     private class TechnologyTrack {

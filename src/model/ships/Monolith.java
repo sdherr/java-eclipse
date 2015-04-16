@@ -1,29 +1,46 @@
 package model.ships;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import model.Player;
 import model.PlayerSpecies;
-import model.Technology;
 
 /*
  * Monoliths are not ships in any respect, but they can chill here with everything
  * else that is buildable.
  */
-public class Monolith {
-    /*
-     * I really wanted to have in Purchasable interface that specified static
-     * canBePurchased(Player) and getCost(Player), but java < 8 doesn't support
-     * static methods in interfaces. Instead Purchasable classes will just
-     * magically have these methods, and something else will "know" that they
-     * are the only purchasable things.
-     */
-    public static boolean canBePurchased(Player player) {
-        return player.hasResearched(Technology.Monolith);
+public class Monolith extends ShipBlueprint {
+    Player player;
+    public Monolith (Player player) {
+        this.player = player;
     }
 
-    public static int getCost(Player player) {
+    @Override
+    public int getCost() {
         if (player.getSpecies() == PlayerSpecies.Mechanema) {
             return 8;
         }
         return 10;
+    }
+    
+    @Override
+    protected Map<Integer, ShipPart> getInitialBlueprint() {
+        return new HashMap<Integer, ShipPart>();
+    }
+
+    @Override
+    protected int getInherentInitiative() {
+        return 0;
+    }
+
+    @Override
+    protected int getInherentPower() {
+        return 0;
+    }
+
+    @Override
+    public int reputationDraws() {
+        return 0;
     }
 }

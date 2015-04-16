@@ -10,7 +10,7 @@ import model.Technology;
 /*
  * Orbitals aren't really ships except for exiles. Oh well.
  */
-public class Orbital extends Ship {
+public class Orbital extends ShipBlueprint {
     Player player;
     
     public Orbital(Player player) {
@@ -61,5 +61,16 @@ public class Orbital extends Ship {
             return 1;
         }
         return 0;
+    }
+
+    @Override
+    public int getCost() {
+        if (player.getSpecies() == PlayerSpecies.Mechanema) {
+            return 4;
+        }
+        if (player.getSpecies() == PlayerSpecies.Exiles) {
+            return 6;
+        }
+        return 5;
     }
 }
