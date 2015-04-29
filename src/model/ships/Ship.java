@@ -1,7 +1,11 @@
 package model.ships;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import model.Player;
 import model.Sector;
+import model.Technology;
 
 public class Ship {
     private Player owner;
@@ -12,6 +16,63 @@ public class Ship {
         this.owner = owner;
         this.location = location;
         this.type = type;
+    }
+    
+    public Set<Sector> getNavagatableSectors() {
+        int drive = owner.getShipBlueprint(type).getDrive();
+        boolean hasJumpDrive = owner.getShipBlueprint(type).hasJumpDrive();
+        boolean hasWormholeGenerator = owner.hasResearched(Technology.Wormhole_Generator);
+        boolean hasCloakingDevice = owner.hasResearched(Technology.Cloaking_Device);
+        return getNavagatableSectors(location, drive, hasJumpDrive, hasWormholeGenerator, hasCloakingDevice);
+    }
+    
+    private boolean pinnedInSector(Sector sector, boolean hasCloakingDevice) {
+        int enemyShips = 0;
+        int alliedShips = 1; // includes your own, so would include this one
+        for (Ship ship : sector.getShips()) {
+            Player player = ship.getOwner();
+            if (player == owner || owner.getAllies().contains(player)) {
+                alliedShips += 1;
+            }
+            else {
+                enemyShips += 1;
+            }
+        }
+        if (alliedShips > enemyShips) {
+            return false;
+        }
+        return true;
+    }
+    
+    private Set<Sector> getNavagatableSectors(Sector current, int drive, boolean hasJumpDrive, boolean hasWormholeGenerator, boolean hasCloakingDevice) {
+        Set<Sector> navagatableSectors = new HashSet<Sector>();
+        navagatableSectors.add(current);
+        if (drive == 0 || pinnedInSector(current, hasCloakingDevice)) {
+            return navagatableSectors;
+        }
+        
+        for (Sector sector : current.getConnectedSectors()) {
+            navagatableSectors.addAll(getNavagatableSectors(sector, drive - 1, hasJumpDrive, hasWormholeGenerator, hasCloakingDevice));
+        }
+        
+        if (hasWormholeGenerator) {
+            for (Sector sector : current.getSemiconnectedSectors()) {
+                navagatableSectors.addAll(getNavagatableSectors(sector, drive - 1, hasJumpDrive, hasWormholeGenerator, hasCloakingDevice));
+            }
+        }
+        
+        if (hasJumpDrive) {
+            for (Sector sector : current.getAdjacentSectors()) {
+                navagatableSectors.addAll(getNavagatableSectors(sector, drive - 1, false, hasWormholeGenerator, hasCloakingDevice));
+            }
+            if (!hasWormholeGenerator) {
+                for (Sector sector : current.getSemiconnectedSectors()) {
+                    navagatableSectors.addAll(getNavagatableSectors(sector, drive - 1, false, hasWormholeGenerator, hasCloakingDevice));
+                }
+            }
+        }
+
+        return navagatableSectors;
     }
     
     public Player getOwner() {

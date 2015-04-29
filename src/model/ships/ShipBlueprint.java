@@ -21,6 +21,7 @@ public abstract class ShipBlueprint {
 	private int power;
 	private int interceptorBays;
 	private int regeneration;
+	private boolean hasJumpDrive = false;
 	private Player player;
 	private Map<Integer, ShipPart> blueprint;
 	
@@ -67,6 +68,10 @@ public abstract class ShipBlueprint {
 	    return 0;
 	}
 	
+	public boolean hasJumpDrive() {
+	    return hasJumpDrive;
+	}
+	
 	public void removeShipPart(Integer position) throws Exception {
 	    ShipPart oldPart = blueprint.get(position);
 	    blueprint.put(position, getInitialBlueprint().get(position));
@@ -83,6 +88,9 @@ public abstract class ShipBlueprint {
 	public void placeShipPart(Integer position, ShipPart part) throws Exception {
 	    ShipPart oldPart = blueprint.get(position);
 	    blueprint.put(position, part);
+	    if (part == ShipPart.Jump_Drive) {
+	        hasJumpDrive = true;
+	    }
 	    try {
 	        recalculateShipAttributes();
 	    }

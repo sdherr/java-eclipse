@@ -1,8 +1,11 @@
 package model;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import model.ships.AncientShip;
+import model.ships.Ship;
 import model.ships.ShipBlueprint;
 
 public class Sector {
@@ -16,10 +19,13 @@ public class Sector {
 	private boolean monolith = false;
 	private List<World> worlds;
 	private List<AncientShip> ancientShips;
-	private List<ShipBlueprint> ships;
+	private List<Ship> ships;
 	private Player controllingPlayer;
+	private Set<Sector> adjacentSectors = new HashSet<Sector>();
+	private Set<Sector> connectedSectors = new HashSet<Sector>();
+	private Set<Sector> semiconnectedSectors = new HashSet<Sector>();
 	
-	public Sector(int id, String name, int value, String wormholes, boolean discoveryTile, boolean artifact, List<World> worlds, List<AncientShip> ancientShips) {
+	public Sector(int id, String name, int value, String wormholes, boolean discoveryTile, boolean artifact, boolean hasCenterWormhole, List<World> worlds, List<AncientShip> ancientShips) {
 		this.id = id;
 		this.value = value;
 		this.name = name;
@@ -30,9 +36,41 @@ public class Sector {
 		if (artifact) {
 		    artifacts = 1;
 		}
+		this.centerWormhole = hasCenterWormhole;
 	}
 	
-	public int numberOfArtifacts() {
+	public Set<Sector> getAdjacentSectors() {
+        return adjacentSectors;
+    }
+
+    public void addAdjacentSectors(Sector adjacentSector) {
+        if (!connectedSectors.contains(adjacentSector) && !semiconnectedSectors.contains(adjacentSector)) {
+            adjacentSectors.add(adjacentSector);
+        }
+    }
+
+    public Set<Sector> getConnectedSectors() {
+        return connectedSectors;
+    }
+
+    public void addConnectedSectors(Sector connectedSector) {
+        adjacentSectors.remove(connectedSector);
+        semiconnectedSectors.remove(connectedSector);
+        connectedSectors.add(connectedSector);
+    }
+
+    public Set<Sector> getSemiconnectedSectors() {
+        return semiconnectedSectors;
+    }
+
+    public void addSemiconnectedSectors(Sector semiconnectedSector) {
+        if (!connectedSectors.contains(semiconnectedSector)) {
+            adjacentSectors.remove(semiconnectedSector);
+            semiconnectedSectors.add(semiconnectedSector);
+        }
+    }
+
+    public int numberOfArtifacts() {
 	    return artifacts;
 	}
 	
@@ -40,14 +78,25 @@ public class Sector {
 	    return value;
 	}
 	
+	protected void connectWormholeSectors() {
+	    for (Sector sector : PlayMap.Instance.getPlacedSectors()) {
+	        if (sector.hasCenterWormhole()) {
+	            this.addConnectedSectors(sector);
+	            sector.addConnectedSectors(this);
+	        }
+	    }
+	}
+	
 	public void addWarpPortalDevelopment() {
 	    value += 1;
 	    centerWormhole = true;
+	    connectWormholeSectors();
 	}
 	
 	public void addWarpPortalDiscovery() {
 	    value += 2;
 	    centerWormhole = true;
+        connectWormholeSectors();
 	}
 	
 	public void addShellworld() {
@@ -57,10 +106,6 @@ public class Sector {
 	
 	public boolean hasCenterWormhole() {
 		return centerWormhole;
-	}
-	
-	public void setCenterWormhole() {
-	    centerWormhole = true;
 	}
 	
 	public boolean hasMonolith() {
@@ -87,5 +132,13 @@ public class Sector {
 	public void addOrbitalDiscovery() {
 	    artifacts += 1;
 	    addOrbital();
+	}
+	
+	public void addShip(Ship ship) {
+	    ships.add(ship);
+	}
+	
+	public List<Ship> getShips() {
+	    return ships;
 	}
 }

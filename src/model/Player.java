@@ -1,6 +1,8 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +30,12 @@ public class Player {
 	private int colonyShips = 3;
 	private int usedColonyShips = 0;
 	private int influenceDisks = 13;
+    private int orangePopulation = 11;
+    private int pinkPopulation = 11;
+    private int brownPopulation = 11;
+    private int orangeGraveyard = 0;
+    private int pinkGraveyard = 0;
+    private int brownGraveyard = 0;
 	private int exp = 1; // one sector on exp
 	private int inf = 2; // two colony ships on inf
 	private int res = 1; // one technology on res
@@ -39,11 +47,43 @@ public class Player {
     private List<Ship> ships = new ArrayList<Ship>();
     private List<Sector> sectors = new ArrayList<Sector>();
     private Set<ShipPart> upgradableParts = new HashSet<ShipPart>();
-    private Map<ShipType, ShipBlueprint> shipBlueprints = new HashMap<ShipType, ShipBlueprint>();
-    private Map<TechnologyType, TechnologyTrack> technologyTracks = new HashMap<TechnologyType, TechnologyTrack>();
+    private Map<ShipType, ShipBlueprint> shipBlueprints = new EnumMap<ShipType, ShipBlueprint>(ShipType.class);
+    private Map<TechnologyType, TechnologyTrack> technologyTracks = new EnumMap<TechnologyType, TechnologyTrack>(TechnologyType.class);
     private List<Development> developments = new ArrayList<Development>();
     private List<RepAmbSlot> repAmbTrack = new ArrayList<RepAmbSlot>();
     private List<ShipPart> oneTimePlacementParts = new ArrayList<ShipPart>();
+    private static List<Integer> populationTrackValues;
+    private static List<Integer> influenceTrackValues;
+    private Set<Player> allies = new HashSet<Player>();
+    static {
+        populationTrackValues = new ArrayList<Integer>();
+        populationTrackValues.add(2);
+        populationTrackValues.add(3);
+        populationTrackValues.add(4);
+        populationTrackValues.add(6);
+        populationTrackValues.add(8);
+        populationTrackValues.add(10);
+        populationTrackValues.add(12);
+        populationTrackValues.add(15);
+        populationTrackValues.add(18);
+        populationTrackValues.add(21);
+        populationTrackValues.add(24);
+        populationTrackValues.add(28);
+        influenceTrackValues = new ArrayList<Integer>();
+        influenceTrackValues.add(0);
+        influenceTrackValues.add(0);
+        influenceTrackValues.add(1);
+        influenceTrackValues.add(2);
+        influenceTrackValues.add(3);
+        influenceTrackValues.add(5);
+        influenceTrackValues.add(7);
+        influenceTrackValues.add(10);
+        influenceTrackValues.add(13);
+        influenceTrackValues.add(17);
+        influenceTrackValues.add(21);
+        influenceTrackValues.add(25);
+        influenceTrackValues.add(30);
+    }
 	
 	public Player(PlayerSpecies species, PlayerColor color) {
 	    this.species = species;
@@ -200,6 +240,14 @@ public class Player {
 	
 	public PlayerSpecies getSpecies() {
 		return species;
+	}
+	
+	public Set<Player> getAllies() {
+	    return allies;
+	}
+	
+	public ShipBlueprint getShipBlueprint(ShipType type) {
+	    return shipBlueprints.get(type);
 	}
 	
 	public boolean hasResearched(Technology tech) {
@@ -436,7 +484,7 @@ public class Player {
      * Given technologies and already built ships and controlled sectors only.
      * Not counting cost.
      */
-    private boolean canBuild(ShipType shipType) {
+    private boolean canBuild(ShipType shipType, Sector location) {
         int numShipsBuilt = 0;
         for (Ship ship : ships) {
             if (ship.getType() == shipType) {
@@ -465,8 +513,14 @@ public class Player {
                 return numShipsBuilt < 4 && hasResearched(Technology.Starbase);
             }
         }
+        else if (shipType == ShipType.Orbital && location != null) {
+            return hasResearched(Technology.Orbital) && !location.hasOrbital();
+        }
         else if (shipType == ShipType.Orbital) {
             return hasResearched(Technology.Orbital) && !listEmptyOrbitalSectors().isEmpty();
+        }
+        else if (shipType == ShipType.Monolith && location != null) {
+            return hasResearched(Technology.Monolith) && !location.hasMonolith();
         }
         else if (shipType == ShipType.Monolith) {
             return hasResearched(Technology.Monolith) && !listEmptyMonolithSectors().isEmpty();
@@ -475,11 +529,36 @@ public class Player {
     }
 	
 	public boolean canEasilyBuild(ShipType shipType) {
-	    return canBuild(shipType) && getShipCost(shipType) <= materials;
+	    return canBuild(shipType, null) && getShipCost(shipType) <= materials;
 	}
 	
 	public boolean canPossiblyBuild(ShipType shipType) {
-	    return canBuild(shipType) && getShipCost(shipType) <= maxPossibleMaterials();
+	    return canBuild(shipType, null) && getShipCost(shipType) <= maxPossibleMaterials();
+	}
+	
+	public List<Sector> listBuildLocations(ShipType type) {
+	    if (type == ShipType.Monolith) {
+	        return listEmptyMonolithSectors();
+	    }
+	    if (type == ShipType.Orbital) {
+	        return listEmptyOrbitalSectors();
+	    }
+	    return sectors;
+	}
+	
+	public void build(ShipType type, Sector location) {
+	    if (canBuild(type, location) && shipBlueprints.get(type).getCost() <= materials) {
+	        materials -= shipBlueprints.get(type).getCost();
+	        if (type == ShipType.Monolith) {
+	            location.addMonolith();
+	            return;
+	        }
+	        else if (type == ShipType.Orbital) {
+	            location.addOrbital();
+	            return;
+	        }
+	        ships.add(new Ship(this, location, type));
+	    }
 	}
 	
 	public int remainingColonyShips() {
