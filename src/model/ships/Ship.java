@@ -28,17 +28,24 @@ public class Ship {
     
     private boolean pinnedInSector(Sector sector, boolean hasCloakingDevice) {
         int enemyShips = 0;
-        int alliedShips = 1; // includes your own, so would include this one
+        int alliedShips = 0;
+        int ownShips = 0;
         for (Ship ship : sector.getShips()) {
             Player player = ship.getOwner();
-            if (player == owner || owner.getAllies().contains(player)) {
+            if (player == owner) {
+                ownShips += 1;
+            }
+            else if (owner.getAllies().contains(player)) {
                 alliedShips += 1;
             }
             else {
                 enemyShips += 1;
             }
         }
-        if (alliedShips > enemyShips) {
+        if ((enemyShips - alliedShips) <= ownShips) {
+            return false;
+        }
+        if (hasCloakingDevice && (enemyShips - alliedShips) / 2 <= ownShips) {
             return false;
         }
         return true;
