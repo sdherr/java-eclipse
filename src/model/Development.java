@@ -8,7 +8,12 @@ public enum Development {
     Research_Station(5, 5, 0),
     Trade_Fleet(0, 5, 5),
     Shellworld(0, 20, 0),
-    Warp_Portal(0, 8, 0);
+    Warp_Portal(0, 8, 0),
+    // From Shadow of the Rift
+    // TODO: These
+    Quantum_Labs(0, 7, 0),
+    Ancient_Labs(8, 0, 0),
+    Genetics_Labs(0, 3, 5);
     
     private final int economy;
     private final int materials;

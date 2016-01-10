@@ -23,7 +23,7 @@ public enum ShipPart {
     Muon_Source,
     Nuclear_Drive,
     Fusion_Drive,
-    Tachon_Drive,
+    Tachyon_Drive,
     Conformal_Drive,
     Jump_Drive,
     Gauss_Shield,
@@ -40,6 +40,17 @@ public enum ShipPart {
     Plasma_Missile,
     Antimatter_Missile, // only found on Ancient Cruiser
     Interceptor_Bay,
+    // From Shadow of the Rift
+    Soliton_Cannon,
+    Rift_Cannon,
+    Anomoly_Cannon, // only found on mobile Anomalies, plannet killer gun
+    Plasma_Turret,
+    Soliton_Turret,
+    Rift_Turret,
+    Antimatter_Accelerator, // only found on Pyxis Deathmoon
+    Absorption_Shield,
+    Inversion_Shield,
+    Transition_Drive,
     None;
 
 	public int getPower() {
@@ -50,12 +61,26 @@ public enum ShipPart {
 			return -1;
 		case Plasma_Cannon:
 			return -2;
+		case Plasma_Turret:
+		    return -3;
+		case Soliton_Cannon:
+		    return -3;
+		case Soliton_Turret:
+		    return -2;
 		case Antimatter_Cannon:
 			return -4;
+		case Antimatter_Accelerator:
+		    return -1;
+		case Rift_Cannon:
+		    return -1;
 		case Phase_Shield:
 			return -1;
 		case Flux_Shield:
 			return -2;
+		case Absorption_Shield:
+		    return 4;
+		case Inversion_Shield:
+		    return 2;
 		case Conifold_Field:
 			return -2;
 		case Positron_Computer:
@@ -78,7 +103,7 @@ public enum ShipPart {
 			return -1;
 		case Fusion_Drive:
 			return -2;
-		case Tachon_Drive:
+		case Tachyon_Drive:
 			return -3;
 		case Conformal_Drive:
 			return -2;
@@ -101,14 +126,18 @@ public enum ShipPart {
 			return 1;
 		case Fusion_Drive:
 			return 2;
-		case Tachon_Drive:
+		case Tachyon_Drive:
 			return 3;
 		case Conformal_Drive:
 			return 2;
+		case Transition_Drive:
+		    return -1;
 		case Flux_Missile:
 			return 2;
 		case Ion_Disruptor:
 			return 3;
+		case Soliton_Turret:
+		    return -2;
 		case Morph_Shield:
 			return 2;
 		case Muon_Source:
@@ -146,16 +175,40 @@ public enum ShipPart {
 		case Plasma_Cannon:
 			dice.add(Die.Orange);
 			break;
+		case Soliton_Cannon:
+		    dice.add(Die.Blue);
+		    break;
 		case Antimatter_Cannon:
+		    dice.add(Die.Red);
+		    break;
+		case Antimatter_Accelerator:
 			dice.add(Die.Red);
 			break;
+		case Rift_Cannon:
+		    dice.add(Die.Pink);
+		    break;
 		case Ion_Turret:
 			dice.add(Die.Yellow);
 			dice.add(Die.Yellow);
 			break;
+		case Plasma_Turret:
+		    dice.add(Die.Orange);
+		    dice.add(Die.Orange);
+		    break;
+		case Soliton_Turret:
+		    dice.add(Die.Blue);
+		    dice.add(Die.Blue);
+		    break;
+		case Rift_Turret:
+		    dice.add(Die.Pink);
+		    dice.add(Die.Pink);
+		    break;
 		case Ion_Disruptor:
 			dice.add(Die.Yellow);
 			break;
+		case Anomoly_Cannon:
+		    dice.add(Die.Grey);
+		    break;
 		default: // do nothing
 		}
 		return dice;
@@ -207,6 +260,10 @@ public enum ShipPart {
 			return 3;
 		case Morph_Shield:
 			return 1;
+		case Absorption_Shield:
+		    return 1;
+		case Inversion_Shield:
+		    return 2;
 		default:
 			return 0;
 		}
@@ -220,10 +277,12 @@ public enum ShipPart {
 			return 1;
 		case Fusion_Drive:
 			return 2;
-		case Tachon_Drive:
+		case Tachyon_Drive:
 			return 3;
 		case Conformal_Drive:
 			return 4;
+		case Transition_Drive:
+		    return 3;
 		default:
 			return 0;
 		}

@@ -23,7 +23,9 @@ public class Ship {
         boolean hasJumpDrive = owner.getShipBlueprint(type).hasJumpDrive();
         boolean hasWormholeGenerator = owner.hasResearched(Technology.Wormhole_Generator);
         boolean hasCloakingDevice = owner.hasResearched(Technology.Cloaking_Device);
-        return getNavagatableSectors(location, drive, hasJumpDrive, hasWormholeGenerator, hasCloakingDevice);
+        Set<Sector> sectors =  getNavagatableSectors(location, drive, hasJumpDrive, hasWormholeGenerator, hasCloakingDevice);
+        sectors.remove(location);
+        return sectors;
     }
     
     private boolean pinnedInSector(Sector sector, boolean hasCloakingDevice) {

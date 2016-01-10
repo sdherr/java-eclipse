@@ -25,6 +25,7 @@ public enum Technology {
     Monolith(12, 6, TechnologyType.Nano),
     Artifact_Key(14, 7, TechnologyType.Nano),
     Wormhole_Generator(16, 8, TechnologyType.Nano),
+    // From Rise of the Ancients
     Antimatter_Splitter(5, 5, TechnologyType.Rare),
     Neutron_Absorber(5, 5, TechnologyType.Rare),
     Distortion_Shield(7, 6, TechnologyType.Rare),
@@ -34,7 +35,17 @@ public enum Technology {
     Sentient_Hull(5, 5, TechnologyType.Rare),
     Interceptor_Bay(9, 7, TechnologyType.Rare),
     Flux_Missile(11, 8, TechnologyType.Rare),
-    Zero_Point_Source(15, 10, TechnologyType.Rare);
+    Zero_Point_Source(15, 10, TechnologyType.Rare),
+    // From Shadow of the Rift
+    // TODO: these
+    Advanced_Genetics(7, 6, TechnologyType.Rare),
+    Metasynthesis(17, 11, TechnologyType.Rare),
+    Rift_Cannon(9, 7, TechnologyType.Rare),
+    Soliton_Cannon(9, 7, TechnologyType.Rare),
+    Absorption_Shield(7, 6, TechnologyType.Rare),
+    Transition_Drive(9, 7, TechnologyType.Rare),
+    
+    ;
     
     private final int defaultCost;
     private final int minimumCost;

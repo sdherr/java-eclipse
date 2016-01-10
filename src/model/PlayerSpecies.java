@@ -8,8 +8,13 @@ public enum PlayerSpecies {
 	Hydran,
 	Enlightened,
 	Rho_Indi,
+	// from Rise of Ancients
 	Descendants,
 	Orion,
 	Exiles,
-	Magellan;
+	Magellan,
+	// from Shadow of Rift
+	Octantis,
+	Shapers,
+	Unity;
 }

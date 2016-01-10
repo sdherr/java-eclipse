@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,6 +16,7 @@ public class Sector {
 	private String name;
 	private String wormholes;
 	private boolean centerWormhole;
+	private boolean deepWarp;
 	private boolean discoveryTile;
 	private boolean monolith = false;
 	private List<World> worlds;
@@ -140,5 +142,13 @@ public class Sector {
 	
 	public List<Ship> getShips() {
 	    return ships;
+	}
+	
+	public boolean isDeepWarp() {
+	    return deepWarp;
+	}
+	
+	public void setDeepWarp() {
+	    this.deepWarp = true;
 	}
 }

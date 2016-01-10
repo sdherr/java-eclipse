@@ -12,12 +12,25 @@ public enum DiscoveryTile {
     Ion_Turret,
     Conformal_Drive,
     Flux_Shield,
-    // Expansion
+    // From Rise of the Ancients
     Money_Science_Materials,
     Ancient_Warp_Portal,
     Ancient_Orbital,
     Jump_Drive,
     Muon_Source,
     Morph_Shield,
-    Ion_Disruptor;
+    Ion_Disruptor,
+    // From Nebula
+    Ancient_Monolith,
+    // From Shadow of the Rift
+    Plasma_Turret,
+    Soliton_Turret,
+    Rift_Turret,
+    Inversion_Shield,
+    Rapid_Mutation,
+    Accelerated_Evolution,
+    Transmatter_Quantifier,
+    Rift_Orbital,
+    Rift_Movement,
+    ;
 }

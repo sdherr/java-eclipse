@@ -350,7 +350,7 @@ public class Player {
             upgradableParts.add(ShipPart.Fusion_Drive);
             break;
 	    case Tachyon_Drive:
-            upgradableParts.add(ShipPart.Tachon_Drive);
+            upgradableParts.add(ShipPart.Tachyon_Drive);
             break;
 	    case Fusion_Source:
             upgradableParts.add(ShipPart.Fusion_Source);
@@ -607,6 +607,14 @@ public class Player {
 	            sector.addOrbitalDiscovery();
 	        }
 	        break;
+	    case Ancient_Monolith:
+	    case Rapid_Mutation:
+	    case Accelerated_Evolution:
+	    case Transmatter_Quantifier:
+	    case Rift_Orbital:
+	    case Rift_Movement:
+	        // TODO: all of these
+	        break;
 	    case Ancient_Warp_Portal:
 	        sector.addWarpPortalDiscovery();
 	        break;
@@ -640,6 +648,18 @@ public class Player {
             break;
         case Jump_Drive:
             oneTimePlacementParts.add(ShipPart.Jump_Drive);
+            break;
+        case Inversion_Shield:
+            oneTimePlacementParts.add(ShipPart.Inversion_Shield);
+            break;
+        case Plasma_Turret:
+            oneTimePlacementParts.add(ShipPart.Plasma_Turret);
+            break;
+        case Soliton_Turret:
+            oneTimePlacementParts.add(ShipPart.Soliton_Turret);
+            break;
+        case Rift_Turret:
+            oneTimePlacementParts.add(ShipPart.Rift_Turret);
             break;
 	    }
 	}
