@@ -44,6 +44,11 @@ public class Ship {
                 enemyShips += 1;
             }
         }
+        for (AncientShip ancientShip : sector.getAncientShips()) {
+            if (!(ancientShip instanceof Anomaly)) {
+                enemyShips += 1;
+            }
+        }
         if ((enemyShips - alliedShips) <= ownShips) {
             return false;
         }

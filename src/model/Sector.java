@@ -1,22 +1,31 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import model.ships.AncientInterceptor;
 import model.ships.AncientShip;
 import model.ships.Ship;
 import model.ships.ShipBlueprint;
 
 public class Sector {
-	private int id;
+    private final int id;
+    private final String name;
+    
+    // location in axial coordinants
+    private int q;
+    private int r;
+    
 	private int value;
     private int artifacts = 0;
-	private String name;
 	private String wormholes;
 	private boolean centerWormhole;
-	private boolean deepWarp;
+	private boolean deepWarp = false;
+	private Map<Integer, Sector> nebula;
 	private boolean discoveryTile;
 	private boolean monolith = false;
 	private List<World> worlds;
@@ -27,10 +36,11 @@ public class Sector {
 	private Set<Sector> connectedSectors = new HashSet<Sector>();
 	private Set<Sector> semiconnectedSectors = new HashSet<Sector>();
 	
+
 	public Sector(int id, String name, int value, String wormholes, boolean discoveryTile, boolean artifact, boolean hasCenterWormhole, List<World> worlds, List<AncientShip> ancientShips) {
-		this.id = id;
+        this.id = id;
+        this.name = name;
 		this.value = value;
-		this.name = name;
 		this.wormholes = wormholes;
 		this.discoveryTile = discoveryTile;
 		this.worlds = worlds;
@@ -39,6 +49,95 @@ public class Sector {
 		    artifacts = 1;
 		}
 		this.centerWormhole = hasCenterWormhole;
+	}
+	
+	/**
+	 * Place a sector on the board
+	 * @param q axial coordinate
+	 * @param r axial coordinate
+	 * @param rotation a number representing how the sector has been rotated from the "beginning" orrientation.
+	 *   Positive = clockwise
+	 */
+	public void place(int q, int r, int rotation) {
+	    this.q = q;
+	    this.r = r;
+	    // translate rotation into an equivalent 0-5 representation
+	    while (rotation < 0) {
+	        rotation += 6;
+	    }
+	    while (rotation > 5) {
+	        rotation -= 6;
+	    }
+	    // move wormholes
+	    while (rotation > 0) {
+	        // take the wormhole off the end and add it to the beginning
+	        wormholes = wormholes.substring(6) + wormholes.substring(0, 6);
+	        if (isNebula()) {
+	            Map<Integer, Sector> newNebula = new HashMap<Integer, Sector>();
+	            newNebula.put(0, nebula.get(5));
+                newNebula.put(1, nebula.get(0));
+                newNebula.put(2, nebula.get(1));
+                newNebula.put(3, nebula.get(2));
+                newNebula.put(4, nebula.get(3));
+                newNebula.put(5, nebula.get(4));
+                nebula = newNebula;
+	        }
+	        rotation--;
+	    }
+	    
+	    calculateConnections();
+	}
+	
+	protected void calculateConnections() {
+	    Sector left = PlayMap.Instance.getSector(q-1, r);
+	    Sector leftDown = PlayMap.Instance.getSector(q-1, r+1);
+	    Sector leftUp = PlayMap.Instance.getSector(q, r-1);
+        Sector rightDown = PlayMap.Instance.getSector(q, r+1);
+        Sector rightUp = PlayMap.Instance.getSector(q+1, r-1);
+        Sector right = PlayMap.Instance.getSector(q+1, r);
+        Map<Sector, Integer> sector_to_wormhole_index = new HashMap<Sector, Integer>();
+        sector_to_wormhole_index.put(rightUp, 0);
+        sector_to_wormhole_index.put(right, 1);
+        sector_to_wormhole_index.put(rightDown, 2);
+        sector_to_wormhole_index.put(leftDown, 3);
+        sector_to_wormhole_index.put(left, 4);
+        sector_to_wormhole_index.put(leftUp, 5);
+        for (Sector neighbor : sector_to_wormhole_index.keySet()) {
+            if (neighbor != null) {
+                int my_index = sector_to_wormhole_index.get(neighbor);
+                int his_index = my_index + 3;
+                if (his_index > 5) {
+                    his_index -= 6;
+                }
+                // if either one of us is a nebula we want to connect to the sub-sector
+                Sector me = this;
+                if (isNebula()) {
+                    me = nebula.get(my_index);
+                }
+                if (neighbor.isNebula()) {
+                    neighbor = neighbor.nebula.get(his_index);
+                }
+                // now finally the real part
+                if (wormholes.charAt(my_index) == '1' && neighbor.wormholes.charAt(his_index) == '1') {
+                    addConnectedSectors(neighbor);
+                    neighbor.addConnectedSectors(this);
+                } else if (wormholes.charAt(my_index) == '1' && neighbor.wormholes.charAt(his_index) == '1') {
+                    addSemiconnectedSectors(neighbor);
+                    neighbor.addSemiconnectedSectors(this);
+                } else {
+                    addAdjacentSectors(neighbor);
+                    neighbor.addAdjacentSectors(this);
+                }
+            }
+        }
+        if (hasCenterWormhole()) {
+            connectWormholeSectors();
+        }
+        if (isDeepWarp()) {
+            Sector nexus = PlayMap.Instance.getNexus();
+            addConnectedSectors(nexus);
+            nexus.addConnectedSectors(this);
+        }
 	}
 	
 	public Set<Sector> getAdjacentSectors() {
@@ -144,11 +243,45 @@ public class Sector {
 	    return ships;
 	}
 	
+	public List<AncientShip> getAncientShips() {
+	    return ancientShips;
+	}
+	
 	public boolean isDeepWarp() {
 	    return deepWarp;
 	}
 	
 	public void setDeepWarp() {
-	    this.deepWarp = true;
+	    deepWarp = true;
+	}
+	
+	public boolean isNebula() {
+	    return nebula == null;
+	}
+	
+	public void setNebula() {
+	    List<World> worlds = new ArrayList<World>();
+        List<AncientShip> ships = new ArrayList<AncientShip>();
+	    Sector a = new Sector(-1, "", 0, "111111", true, false, false, worlds, ships);
+	    worlds = new ArrayList<World>();
+	    ships = new ArrayList<AncientShip>();
+        Sector b = new Sector(-2, "", 0, "111111", true, false, false, worlds, ships);
+        worlds = new ArrayList<World>();
+        ships = new ArrayList<AncientShip>();
+        ships.add(new AncientInterceptor());
+        Sector c = new Sector(-3, "", 0, "111111", false, false, false, worlds, ships);
+        nebula = new HashMap<Integer, Sector>();
+        nebula.put(0, a);
+        nebula.put(1, c);
+        nebula.put(2, c);
+        nebula.put(3, b);
+        nebula.put(4, b);
+        nebula.put(5, a);
+        a.addAdjacentSectors(b);
+        b.addAdjacentSectors(a);
+        a.addAdjacentSectors(c);
+        c.addAdjacentSectors(a);
+        b.addAdjacentSectors(c);
+        c.addAdjacentSectors(b);
 	}
 }

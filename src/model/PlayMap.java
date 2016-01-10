@@ -91,6 +91,15 @@ public enum PlayMap {
 	    return placedSectors;
 	}
 	
+	public Sector getSector(int q, int r) {
+	    //TODO
+	    return null;
+	}
+	
+	public Sector getNexus() {
+	    return warpNexus;
+	}
+	
 	private void initDiscoveries() {
 	    for (int i = 0; i < 3; i++) {
 	        discoveryBag.add(DiscoveryTile.Money);
@@ -638,8 +647,8 @@ public enum PlayMap {
 	}
 	
 	private void initNebulaSectors() {
-	    unplacedRing2.add(new NebulaSector(295, "NGC-5189"));
-        unplacedRing3.add(new NebulaSector(395, "NGC-1952"));
+	    unplacedRing2.add(new Sector(295, "NGC-5189", 0, "111111", false, false, false, new ArrayList<World>(), new ArrayList<AncientShip>()));
+        unplacedRing3.add(new Sector(395, "NGC-1952", 0, "111111", false, false, false, new ArrayList<World>(), new ArrayList<AncientShip>()));
 	}
 	
 	private void initShadowOfRiftSectors() {
