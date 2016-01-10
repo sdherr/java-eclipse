@@ -647,8 +647,12 @@ public enum PlayMap {
 	}
 	
 	private void initNebulaSectors() {
-	    unplacedRing2.add(new Sector(295, "NGC-5189", 0, "111111", false, false, false, new ArrayList<World>(), new ArrayList<AncientShip>()));
-        unplacedRing3.add(new Sector(395, "NGC-1952", 0, "111111", false, false, false, new ArrayList<World>(), new ArrayList<AncientShip>()));
+	    Sector sector = new Sector(295, "NGC-5189", 0, "111111", false, false, false, new ArrayList<World>(), new ArrayList<AncientShip>());
+	    sector.setNebula();
+	    unplacedRing2.add(sector);
+        sector = new Sector(395, "NGC-1952", 0, "111111", false, false, false, new ArrayList<World>(), new ArrayList<AncientShip>());
+        sector.setNebula();
+        unplacedRing3.add(sector);
 	}
 	
 	private void initShadowOfRiftSectors() {

@@ -39,6 +39,13 @@ public class Cruiser extends ShipBlueprint {
             plantaCruiser.put(0, ShipPart.None);
             return plantaCruiser;
         }
+        if (player.getSpecies() == PlayerSpecies.Shapers) {
+            Map<Integer, ShipPart> shapersCruiser = new HashMap<Integer, ShipPart>(blueprint);
+            shapersCruiser.remove(5);
+            shapersCruiser.put(3, ShipPart.Hull);
+            shapersCruiser.put(4, ShipPart.None);
+            return shapersCruiser;
+        }
         return blueprint;
     }
 
@@ -53,6 +60,9 @@ public class Cruiser extends ShipBlueprint {
         if (player.getSpecies() == PlayerSpecies.Rho_Indi) {
             return 2;
         }
+        if (player.getSpecies() == PlayerSpecies.Shapers) {
+            return 0;
+        }
         return 1;
     }
 
@@ -63,6 +73,9 @@ public class Cruiser extends ShipBlueprint {
         }
         if (player.getSpecies() == PlayerSpecies.Planta) {
             return 2;
+        }
+        if (player.getSpecies() == PlayerSpecies.Shapers) {
+            return 5;
         }
         return 0;
     }
@@ -89,17 +102,15 @@ public class Cruiser extends ShipBlueprint {
     }
 
     @Override
-    public int getNumModifiableSlots() {
-        return 6;
-    }
-
-    @Override
     public int getCost() {
         if (player.getSpecies() == PlayerSpecies.Mechanema) {
             return 4;
         }
         if (player.getSpecies() == PlayerSpecies.Rho_Indi) {
             return 6;
+        }
+        if (player.getSpecies() == PlayerSpecies.Unity) {
+            return 4;
         }
         return 5;
     }

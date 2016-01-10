@@ -43,6 +43,11 @@ public class Dreadnought extends ShipBlueprint {
             plantaDreadnought.put(7, ShipPart.Hull);
             return plantaDreadnought;
         }
+        if (player.getSpecies() == PlayerSpecies.Octantis) {
+            Map<Integer, ShipPart> octantisDreadnought = new HashMap<Integer, ShipPart>(blueprint);
+            octantisDreadnought.remove(6);
+            octantisDreadnought.put(0, ShipPart.Soliton_Cannon);
+        }
         return blueprint;
     }
 
@@ -65,6 +70,9 @@ public class Dreadnought extends ShipBlueprint {
         if (player.getSpecies() == PlayerSpecies.Eridani) {
             return 1;
         }
+        if (player.getSpecies() == PlayerSpecies.Octantis) {
+            return 5;
+        }
         return 0;
     }
     
@@ -79,11 +87,6 @@ public class Dreadnought extends ShipBlueprint {
     @Override
     public int reputationDraws() {
         return 3;
-    }
-
-    @Override
-    public int getNumModifiableSlots() {
-        return 7;
     }
 
     @Override

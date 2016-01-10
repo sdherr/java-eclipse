@@ -64,10 +64,6 @@ public abstract class ShipBlueprint {
 	    return 0;
 	}
 	
-	public int getNumModifiableSlots() {
-	    return 0;
-	}
-	
 	public boolean hasJumpDrive() {
 	    return hasJumpDrive;
 	}

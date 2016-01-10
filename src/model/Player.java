@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import model.ships.Cruiser;
+import model.ships.Deathmoon;
 import model.ships.Dreadnought;
 import model.ships.Interceptor;
 import model.ships.Monolith;
@@ -26,7 +27,8 @@ public class Player {
 	private int money;
 	private int science;
 	private int materials;
-	private int tradeRate; // "x to 1"
+	private int mutagen = 0;
+	private int tradeRate = 3; // "x to 1"
 	private int colonyShips = 3;
 	private int usedColonyShips = 0;
 	private int influenceDisks = 13;
@@ -96,7 +98,11 @@ public class Player {
         shipBlueprints.put(ShipType.Interceptor, new Interceptor(this));
         shipBlueprints.put(ShipType.Cruiser, new Cruiser(this));
         shipBlueprints.put(ShipType.Dreadnought, new Dreadnought(this));
-        shipBlueprints.put(ShipType.Starbase, new Starbase(this));
+        if (species == PlayerSpecies.Unity) {
+            shipBlueprints.put(ShipType.Deathmoon, new Deathmoon(this));
+        } else {
+            shipBlueprints.put(ShipType.Starbase, new Starbase(this));
+        }
         shipBlueprints.put(ShipType.Orbital, new Orbital(this));
         shipBlueprints.put(ShipType.Monolith, new Monolith(this));
         TechnologyTrack militaryTrack= new TechnologyTrack(TechnologyType.Military);
@@ -123,7 +129,6 @@ public class Player {
 	        money = 2;
 	        science = 4;
 	        materials = 3;
-            tradeRate = 3;
             ships.add(new Ship(this, startingSector, ShipType.Interceptor));
             break;
 	    case Orion:
@@ -141,7 +146,6 @@ public class Player {
             money = 2;
             science = 5;
             materials = 2;
-            tradeRate = 3;
             res = 2;
             nanoTrack.add(Technology.Advanced_Labs);
             ships.add(new Ship(this, startingSector, ShipType.Interceptor));
@@ -151,7 +155,6 @@ public class Player {
             money = 4;
             science = 4;
             materials = 4;
-            tradeRate = 3;
             colonyShips = 4;
             exp = 2;
             militaryTrack.add(Technology.Starbase);
@@ -162,7 +165,6 @@ public class Player {
             money = 3;
             science = 3;
             materials = 3;
-            tradeRate = 3;
             upg = 3;
             bui = 3;
             gridTrack.add(Technology.Positron_Computer);
@@ -173,7 +175,6 @@ public class Player {
             money = 26;
             science = 2;
             materials = 4;
-            tradeRate = 3;
             influenceDisks = 11;
             militaryTrack.add(Technology.Plasma_Cannon);
             gridTrack.add(Technology.Gauss_Shield);
@@ -187,7 +188,6 @@ public class Player {
             money = 2;
             science = 4;
             materials = 3;
-            tradeRate = 3;
             gridTrack.add(Technology.Distortion_Shield);
             ships.add(new Ship(this, startingSector, ShipType.Interceptor));
             break;
@@ -195,7 +195,6 @@ public class Player {
             money = 2;
             science = 3;
             materials = 3;
-            tradeRate = 3;
             colonyShips = 2;
             mov = 4;
             availableAmbassadors = 2;
@@ -212,7 +211,6 @@ public class Player {
             money = 3;
             science = 2;
             materials = 4;
-            tradeRate = 3;
             militaryTrack.add(Technology.Cloaking_Device);
             nanoTrack.add(Technology.Orbital);
             ships.add(new Ship(this, startingSector, ShipType.Interceptor));
@@ -221,12 +219,33 @@ public class Player {
             money = 2;
             science = 2;
             materials = 3;
-            tradeRate = 3;
             inf = 1;
             gridTrack.add(Technology.Fusion_Source);
             upgradableParts.add(ShipPart.Fusion_Source);
             ships.add(new Ship(this, startingSector, ShipType.Interceptor));
             break;
+	    case Unity:
+	        money = 8;
+	        colonyShips = 2;
+	        nanoTrack.add(Technology.Advanced_Robotics);
+	        influenceDisks++;
+            ships.add(new Ship(this, startingSector, ShipType.Interceptor));
+            break;
+	    case Shapers:
+	        money = 3;
+	        science = 4;
+	        materials = 2;
+	        militaryTrack.add(Technology.Soliton_Cannon);
+	        upgradableParts.add(ShipPart.Soliton_Cannon);
+	        break;
+	    case Octantis:
+	        money = 2;
+	        science = 3;
+	        materials = 3;
+	        mutagen = 4;
+	        nanoTrack.add(Technology.Fusion_Drive);
+	        upgradableParts.add(ShipPart.Fusion_Drive);
+	        break;
 	    }
 	    
 	    technologyTracks.put(TechnologyType.Military, militaryTrack);

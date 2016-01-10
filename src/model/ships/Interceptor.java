@@ -36,6 +36,12 @@ public class Interceptor extends ShipBlueprint {
             plantaBlueprint.remove(3);
             return plantaBlueprint;
         }
+        if (player.getSpecies() == PlayerSpecies.Shapers) {
+            Map<Integer, ShipPart> shapersBlueprint = new HashMap<Integer, ShipPart>(blueprint);
+            shapersBlueprint.remove(3);
+            shapersBlueprint.put(2, ShipPart.Electron_Computer);
+            return shapersBlueprint;
+        }
         return blueprint;
     }
 
@@ -50,6 +56,9 @@ public class Interceptor extends ShipBlueprint {
         if (player.getSpecies() == PlayerSpecies.Rho_Indi) {
             return 3;
         }
+        if (player.getSpecies() == PlayerSpecies.Shapers) {
+            return 1;
+        }
         return 2;
     }
 
@@ -60,6 +69,9 @@ public class Interceptor extends ShipBlueprint {
         }
         if (player.getSpecies() == PlayerSpecies.Planta) {
             return 2;
+        }
+        if (player.getSpecies() == PlayerSpecies.Shapers) {
+            return 5;
         }
         return 0;
     }
@@ -86,17 +98,15 @@ public class Interceptor extends ShipBlueprint {
     }
 
     @Override
-    public int getNumModifiableSlots() {
-        return 4;
-    }
-
-    @Override
     public int getCost() {
         if (player.getSpecies() == PlayerSpecies.Mechanema) {
             return 2;
         }
         if (player.getSpecies() == PlayerSpecies.Rho_Indi) {
             return 4;
+        }
+        if (player.getSpecies() == PlayerSpecies.Unity) {
+            return 2;
         }
         return 3;
     }

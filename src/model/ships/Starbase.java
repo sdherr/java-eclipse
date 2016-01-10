@@ -38,6 +38,12 @@ public class Starbase extends ShipBlueprint {
             plantaStarbase.remove(3);
             return plantaStarbase;
         }
+        if (player.getSpecies() == PlayerSpecies.Octantis) {
+            Map<Integer, ShipPart> octantisStarbase = new HashMap<Integer, ShipPart>(blueprint);
+            octantisStarbase.remove(3);
+            octantisStarbase.put(0, ShipPart.Soliton_Cannon);
+            return octantisStarbase;
+        }
         return blueprint;
     }
 
@@ -49,12 +55,18 @@ public class Starbase extends ShipBlueprint {
         if (player.getSpecies() == PlayerSpecies.Planta) {
             return 2;
         }
+        if (player.getSpecies() == PlayerSpecies.Octantis) {
+            return 3;
+        }
         return 4;
     }
 
     @Override
     protected int getInherentPower() {
         if (player.getSpecies() == PlayerSpecies.Planta) {
+            return 5;
+        }
+        if (player.getSpecies() == PlayerSpecies.Octantis) {
             return 5;
         }
         return 3;
