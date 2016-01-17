@@ -7,14 +7,110 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import model.ships.AncientCruiser;
 import model.ships.AncientInterceptor;
 import model.ships.AncientShip;
+import model.ships.Anomaly;
 import model.ships.Ship;
 import model.ships.ShipBlueprint;
 
-public class Sector {
+public enum Sector {
+    Galactic_Center(001, 4, "111111", true, true, 1,1, 1,1, 0,0, 2,0, 0), // TODO add GCDS
+    Gastor(101, 2, "011111", true, false, 1,1, 0,0, 1,0, 0,0, 1),
+    Pollux(102, 3, "101101", false, true, 0,0, 1,1, 0,0, 0,0, 0),
+    Beta_Lenois(103, 2, "111011", false, false, 0,0, 0,0, 0,1, 1,0, 0),
+    Arcturus(104, 2, "110110", true, false, 0,0, 1,1, 1,1, 0,0, 2),
+    Zeta_Herculis(105, 3, "110111", true, true, 0,1, 1,0, 1,0, 0,0, 1),
+    Capella(106, 2, "111100", false, false, 1,0, 1,0, 0,0, 0,0, 0),
+    Aldebaran(107, 2, "111101", false, false, 0,1, 0,1, 1,0, 0,0, 0),
+    Mu_Cassiopiae(108, 2, "110110", true, false, 0,0, 1,0, 0,1, 1,0, 1),
+    Alpha_Centauri(201, 1, "010101", false, false, 1,0, 0,0, 1,0, 0,0, 0),
+    Fomalhaut(202, 1, "010101", false, false, 0,0, 1,1, 0,0, 0,0, 0),
+    Chi_Draconis(203, 1, "110101", true, false, 1,0, 1,0, 1,0, 0,0, 2),
+    Vega(204, 2, "110101", true, true, 0,1, 0,0, 0,1, 1,0, 1),
+    Mu_Herculis(205, 1, "001110", false, false, 0,0, 0,1, 1,1, 0,0, 0),
+    Epsilon_Indi(206, 1, "011101", true, false, 1,0, 0,0, 0,0, 0,0, 0),
+    Zeta_Reticuli(207, 1, "110100", true, false, 0,0, 0,0, 0,0, 0,0, 0),
+    Iota_Persei(208, 1, "101101", true, false, 0,0, 0,0, 0,0, 0,0, 0),
+    Delta_Eridani(209, 1, "110101", false, false, 0,0, 1,0, 0,1, 0,0, 0),
+    Psi_Capricorni(210, 1, "100101", false, false, 1,0, 0,0, 1,0, 0,0, 0),
+    Beta_Aquilae(211, 2, "111100", true, true, 0,1, 0,0, 1,0, 1,0, 1),
+    Procyon(221, 3, "110110", false, true, 1,0, 1,1, 1,1, 0,0, 0),
+    Epsilon_Eridani(222, 3, "110110", false, true, 0,0, 1,1, 1,1, 0,0, 0),
+    Altair(223, 3, "110110", false, true, 1,0, 1,1, 1,1, 0,0, 0),
+    Beta_Hydri(224, 3, "110110", false, true, 0,1, 1,1, 1,0, 0,0, 0),
+    Eta_Cassiopeiae(225, 3, "110110", false, true, 1,0, 1,1, 1,1, 0,0, 0),
+    S1_Cygni(226, 3, "110110", false, true, 1,0, 1,0, 1,0, 0,0, 0),
+    Sirius(227, 3, "110110", false, true, 1,0, 1,1, 1,1, 0,0, 0),
+    Sigma_Draconis(228, 3, "110110", false, true, 0,1, 1,0, 1,0, 0,0, 0),
+    Tau_Ceti(229, 3, "110110", false, true, 1,0, 1,1, 1,1, 0,0, 0),
+    Lambda_Aurigae(230, 3, "110110", false, true, 0,1, 1,0, 1,1, 0,0, 0),
+    Delta_Pavonis(231, 3, "110110", false, true, 1,0, 1,1, 1,1, 0,0, 0),
+    Rigel(232, 3, "110110", false, true, 1,1, 1,0, 0,1, 0,0, 0),
+    Zeta_Draconis(301, 2, "101100", true, true, 0,1, 1,0, 1,0, 0,0, 2),
+    Gamma_Serpentis(302, 2, "100110", true, true, 1,0, 0,0, 0,1, 0,0, 1),
+    Eta_Cephei(303, 2, "000101", true, true, 0,0, 0,0, 0,0, 1,0, 1),
+    Theta_Pegasi(304, 1, "100100", false, false, 1,0, 0,0, 0,1, 0,0, 0),
+    Lambda_Serpentis(305, 1, "110100", true, false, 1,0, 1,0, 0,0, 0,0, 1),
+    Beta_Centauri(306, 1, "010100", false, false, 1,0, 0,0, 1,0, 0,0, 0),
+    Sigma_Sagittarii(307, 1, "101100", false, false, 0,0, 0,1, 1,0, 0,0, 0),
+    Kappa_Scorpii(308, 1, "001101", false, false, 0,1, 1,0, 0,0, 0,0, 0),
+    Phi_Piscium(309, 1, "100101", false, false, 0,0, 0,1, 1,0, 0,0, 0),
+    Nu_Phoenicis(310, 1, "100100", false, false, 1,0, 1,0, 0,0, 0,0, 0),
+    Canopus(311, 1, "101100", true, false, 1,0, 0,0, 0,0, 0,0, 0),
+    Antares(312, 1, "110100", true, false, 1,0, 0,0, 0,0, 0,0, 0),
+    Alpha_Ursae_Minoris(313, 1, "100100", true, false, 0,0, 0,0, 0,0, 1,0, 0),
+    Spica(314, 1, "001110", true, false, 0,0, 0,0, 0,0, 1,0, 0),
+    Epsilon_Aurigae(315, 1, "100101", true, false, 0,0, 0,0, 0,0, 0,0, 0),
+    Iota_Carinae(316, 1, "110100", true, false, 0,0, 0,0, 0,0, 0,0, 0),
+    Beta_Crucis(317, 1, "000110", false, false, 0,0, 0,0, 1,1, 0,0, 0),
+    Gamma_Velorum(318, 1, "001100", false, false, 0,1, 0,0, 0,0, 1,0, 0),
+    // Rise of the Ancients
+    Lambda_Fornacis(212, 2, "111111", true, false, 1,0, 0,1, 1,0, 0,0, 3),
+    Iota_Bootis(213, 1, "110101", false, false, 1,0, 1,0, 0,0, 0,0, 0),
+    Ursae_Majois_47(233, 3, "110110", false, true, 1,0, 1,1, 1,1, 0,0, 0),
+    Eta_Geminorum(234, 3, "110110", false, true, 1,1, 0,0, 0,1, 0,0, 0),
+    Mu_Arae(235, 3, "110110", false, true,  1,0, 1,1, 1,1, 0,0, 0),
+    Rho_Indi(236, 0, "110110", false, true, 1,0, 0,1, 1,1, 0,0, 0),
+    Cancri_55(237, 3, "110110", false, true,  1,0, 1,1, 1,1, 0,0, 0),
+    Beta_Lyrae(238, 3, "110110", false, true, 1,1, 1,1, 1,1, 0,0, 0),
+    Omega_Fornacis(271, 3, "110110", true, true, 0,1, 1,0, 1,0, 0,0, 0),
+    Sigma_Hydrae(272, 3, "110110", true, true, 1,0, 0,1, 1,0, 0,0, 0),
+    Theta_Ophiuchi(273, 3, "110110", true, true, 1,1, 0,0, 1,0, 0,0, 0),
+    Alpha_Lyncis(274, 3, "110110", true, true, 0,0, 1,1, 1,0, 0,0, 0),
+    Delta_Corvi(281, 2, "101101", true, false, 0,0, 0,0, 1,0, 0,0, 0),
+    Upsilon_Hydrae(319, 2, "111111", true, false, 1,1, 1,0, 0,1, 0,0, 3),
+    Nu_Ophiuchi(320, 1, "001110", true, false, 0,0, 1,0, 1,0, 0,0, 1),
+    Beta_Delphini(321, 1, "100101", false, false, 0,0, 0,0, 1,1, 0,0, 0),
+    Lambda_Tauri(322, 1, "110100", false, false, 0,0, 1,1, 0,0, 0,0, 0),
+    Zeta_Andromedae(323, 1, "110101", true, false, 0,0, 0,0, 0,0, 0,0, 0),
+    Epsilon_Carinae(324, 2, "101101", false, true, 0,0, 0,0, 0,0, 1,0, 0),
+    Delta_Sextantis(381, 2, "100110", true, false, 0,0, 1,0, 0,0, 0,0, 0),
+    Zeta_Chamaeleontis(382, 2, "101100", true, false, 1,0, 0,0, 0,0, 0,0, 0),
+    // Nebula
+    NGC_5189(295, 0, "111111", false, false, 0,0, 0,0, 0,0, 0,0, 0),
+    NGC_1952(395, 0, "111111", false, false, 0,0, 0,0, 0,0, 0,0, 0),
+    _Nebula_Sub_A(-1, 0, "111111", true, false, 0,0, 0,0, 0,0, 0,0, 0),
+    _Nebula_Sub_B(-2, 0, "111111", true, false, 0,0, 0,0, 0,0, 0,0, 0),
+    _Nebula_Sub_C(-3, 0, "111111", true, false, 0,0, 0,0, 0,0, 0,0, 0),
+    _Nebula_Sub_D(-4, 0, "111111", true, false, 0,0, 0,0, 0,0, 0,0, 0),
+    _Nebula_Sub_E(-5, 0, "111111", false, false, 0,0, 0,0, 0,0, 0,0, 1),
+    _Nebula_Sub_F(-6, 0, "111111", false, false, 0,0, 0,0, 0,0, 0,0, 1),
+    // Shadow of the Rift
+    Alpha_Lacertae(109, 4, "011111", true, false, 0,0, 0,0, 1,0, 0,0, 2),
+    Gamma_Bootis(110, 2, "101110", true, false, 0,0, 0,0, 0,1, 0,1, 0),
+    Alpha_Scuti(189, 2, "110110", false, false, 1,0, 0,0, 1,0, 0,1, 0),
+    Beta_Monocerotis(214, 1, "111011", true, false, 0,1, 1,0, 0,0, 0,1, 1),
+    Theta_Octantis(241, 3, "110110", false, true, 1,0, 0,1, 1,1, 0,0, 0),
+    Kappa_Pyxidis(242, 3, "110110", false, true, 0,0, 0,0, 0,0, 1,1, 0),
+    Nu_Octantis(243, 3, "110110", false, true, 1,0, 0,1, 1,1, 0,0, 0),
+    Zeta_Doradus(244, 3, "110110", false, true, 1,0, 0,1, 1,1, 0,0, 0),
+    Delta_Scuti(289, 1, "010101", false, false, 1,0, 1,0, 0,0, 0,1, 0),
+    Epsilon_Scuti(389, 1, "010100", false, false, 0,0, 1,0, 0,1, 0,1, 0),
+    SDSS_1133(989, 3, "000000", false, true, 0,1, 0,1, 0,1, 1,1, 0),
+    
+    ;
     private final int id;
-    private final String name;
     
     // location in axial coordinants
     private int q;
@@ -23,7 +119,7 @@ public class Sector {
 	private int value;
     private int artifacts = 0;
 	private String wormholes;
-	private boolean centerWormhole;
+	private boolean centerWormhole = false;
 	private boolean deepWarp = false;
 	private Map<Integer, Sector> nebula;
 	private boolean discoveryTile;
@@ -37,18 +133,71 @@ public class Sector {
 	private Set<Sector> semiconnectedSectors = new HashSet<Sector>();
 	
 
-	public Sector(int id, String name, int value, String wormholes, boolean discoveryTile, boolean artifact, boolean hasCenterWormhole, List<World> worlds, List<AncientShip> ancientShips) {
+	private Sector(int id, int value, String wormholes, boolean discoveryTile,
+	        boolean artifact, int brown, int advBrown, int pink, int advPink,
+	        int orange, int advOrange, int white, int advWhite, int interceptors) {
         this.id = id;
-        this.name = name;
 		this.value = value;
 		this.wormholes = wormholes;
 		this.discoveryTile = discoveryTile;
-		this.worlds = worlds;
-		this.ancientShips = ancientShips;
+		
+        worlds = new ArrayList<World>();
+		if (brown > 0 || advBrown > 0) {
+		    worlds.add(new World(WorldType.BROWN, brown, advBrown));
+		}
+		if (pink > 0 || advPink > 0) {
+		    worlds.add(new World(WorldType.PINK, pink, advPink));
+		}
+		if (orange > 0 || advOrange > 0) {
+		    worlds.add(new World(WorldType.ORANGE, orange, advOrange));
+		}
+		if (white > 0 || advWhite > 0) {
+		    worlds.add(new World(WorldType.WHITE, white, advWhite));
+		}
+		
+        ancientShips = new ArrayList<AncientShip>();
+        for (int i = 0; i < interceptors; i++) {
+            ancientShips.add(new AncientInterceptor());
+        }
+        
 		if (artifact) {
 		    artifacts = 1;
 		}
-		this.centerWormhole = hasCenterWormhole;
+		
+		// init center wormhole sectors
+		if (id == 281 || id == 381 || id == 382) {
+		    centerWormhole = true;
+		}
+		
+		// init ancient homeworlds
+		if (id >= 271 && id <= 274) {
+		    ancientShips.add(new AncientCruiser());
+		}
+		
+		// init exile's special world
+		if (id == 234) {
+		    worlds.add(new World(WorldType.ORBITAL, 1, 0));
+		}
+		
+		// TODO do something special for hive sectors? id 212 and 319
+		
+		// init nebula sectors
+		if (id == 295 || id == 395) {
+		    this.setNebula();
+		}
+		
+		// init deep warp sectors
+		if (id == 189 || id == 289 || id == 389) {
+		    deepWarp = true;
+		}
+		
+		// init warp nexus
+		if (id == 989) {
+	        ancientShips.add(new Anomaly(false));
+	        ancientShips.add(new Anomaly(false));
+	        ancientShips.add(new Anomaly(false));
+	        ancientShips.add(new Anomaly(false));
+		}
 	}
 	
 	/**
@@ -251,25 +400,23 @@ public class Sector {
 	    return deepWarp;
 	}
 	
-	public void setDeepWarp() {
-	    deepWarp = true;
-	}
-	
 	public boolean isNebula() {
 	    return nebula == null;
 	}
 	
-	public void setNebula() {
-	    List<World> worlds = new ArrayList<World>();
-        List<AncientShip> ships = new ArrayList<AncientShip>();
-	    Sector a = new Sector(-1, "", 0, "111111", true, false, false, worlds, ships);
-	    worlds = new ArrayList<World>();
-	    ships = new ArrayList<AncientShip>();
-        Sector b = new Sector(-2, "", 0, "111111", true, false, false, worlds, ships);
-        worlds = new ArrayList<World>();
-        ships = new ArrayList<AncientShip>();
-        ships.add(new AncientInterceptor());
-        Sector c = new Sector(-3, "", 0, "111111", false, false, false, worlds, ships);
+	private void setNebula() {
+	    Sector a;
+	    Sector b;
+	    Sector c;
+	    if (id == 295) {
+	        a = Sector._Nebula_Sub_A;
+	        b = Sector._Nebula_Sub_B;
+	        c = Sector._Nebula_Sub_E;
+	    } else {
+	        a = Sector._Nebula_Sub_C;
+	        b = Sector._Nebula_Sub_D;
+	        c = Sector._Nebula_Sub_F;
+	    }
         nebula = new HashMap<Integer, Sector>();
         nebula.put(0, a);
         nebula.put(1, c);
